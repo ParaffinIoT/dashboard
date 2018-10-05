@@ -1,0 +1,10 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# compiled output
+/src/.next
+
+# dependencies
+/node_modules
+
+#exclude env file
+/.env

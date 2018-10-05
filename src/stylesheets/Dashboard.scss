@@ -1,0 +1,16 @@
+.content {
+  margin-left: 300px;
+  transition: margin-left 0.2s ease-in;
+}
+.content2 {
+  margin-left: 60px;
+  transition: margin-left 0.3s ease-in;
+}
+@media (max-width: 980px) {
+  .content {
+    margin-left: 0;
+  }
+  .content2 {
+    margin-left: 0;
+  }
+}
