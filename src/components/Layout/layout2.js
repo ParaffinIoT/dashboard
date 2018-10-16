@@ -3,8 +3,8 @@ import SideBarHeader from "../Sidebar/SidebarHeader";
 import FooterMenu from "../Sidebar/FooterMenu";
 import HideFooterMenu from "../Sidebar/hidefootermenu";
 import HideSideBarHeader from "../Sidebar/hide-sidebar-header";
-import { Layout, Menu, Breadcrumb, Icon } from "antd";
-
+import { Layout, Menu, Icon } from "antd";
+import Link from "next/link";
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 
@@ -41,14 +41,34 @@ class SiderDemo extends React.Component {
         >
           {HEADER}
           <div className="logo" />
-          <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline">
+          <Menu
+            theme="dark"
+            defaultSelectedKeys={[this.props.defaultKey]}
+            mode="inline"
+          >
             <Menu.Item key="1">
-              <Icon type="pie-chart" />
-              <span>Option 1</span>
+              <Link href="/layout2">
+                <a>
+                  <Icon type="pie-chart" />
+                  <span>Home</span>
+                </a>
+              </Link>
             </Menu.Item>
             <Menu.Item key="2">
-              <Icon type="desktop" />
-              <span>Option 2</span>
+              <Link href="/option1">
+                <a>
+                  <Icon type="pie-chart" />
+                  <span>Option 1</span>
+                </a>
+              </Link>
+            </Menu.Item>
+            <Menu.Item key="3">
+              <Link href="/option2">
+                <a>
+                  <Icon type="desktop" />
+                  <span>Option 2</span>
+                </a>
+              </Link>
             </Menu.Item>
             <SubMenu
               key="sub1"
@@ -59,9 +79,9 @@ class SiderDemo extends React.Component {
                 </span>
               }
             >
-              <Menu.Item key="3">Tom</Menu.Item>
-              <Menu.Item key="4">Bill</Menu.Item>
-              <Menu.Item key="5">Alex</Menu.Item>
+              <Menu.Item key="4">Tom</Menu.Item>
+              <Menu.Item key="5">Bill</Menu.Item>
+              <Menu.Item key="6">Alex</Menu.Item>
             </SubMenu>
             <SubMenu
               key="sub2"
@@ -84,13 +104,7 @@ class SiderDemo extends React.Component {
         </Sider>
         <Layout className={contentClass}>
           <Header style={{ background: "#fff", padding: 0 }} />
-          <Content style={{ margin: "0 16px" }}>
-            <Breadcrumb style={{ margin: "16px 0" }}>
-              <Breadcrumb.Item>User</Breadcrumb.Item>
-              <Breadcrumb.Item>Bill</Breadcrumb.Item>
-            </Breadcrumb>
-            {this.props.children}
-          </Content>
+          <Content style={{ margin: "0 16px" }}>{this.props.children}</Content>
           <Footer style={{ textAlign: "center" }}>
             Paraffin IoT ©2018 Created by Paraffin IoT team
           </Footer>
