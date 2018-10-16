@@ -4,9 +4,19 @@
   top: 0;
   left: 0;
   bottom: 0;
-  background: #0c5582;
+  background: hsl(203, 83%, 28%);
   color: #fff;
-  transition: left 0.5s ease-in;
+  transition: left 0.9s ease-in;
+}
+.sidebarLayout {
+  position: fixed;
+  width: 270px;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  background: hsl(203, 83%, 28%);
+  color: #fff;
+  transition: left 0.9s ease-in;
 }
 .sidebar2 {
   position: fixed;
@@ -17,9 +27,38 @@
   background: #0c5582;
   color: #fff;
   font-size: 35px;
-  transition: left 0.5s ease-in;
+  transition: left 0.9s ease-in;
+}
+.ant-menu-dark {
+  background: #0c5582 !important;
+}
+.ant-layout-sider {
+  background: #0c5582 !important;
+}
+.ant-menu-dark,
+.ant-menu-inline .ant-menu-sub {
+  background: #0c5582 !important;
+  margin-top: -4x !important;
+}
+.ant-menu-dark,
+.ant-menu-dark .ant-menu-sub {
+  background: #0c5582 !important;
 }
 
+.content3 {
+  margin-left: 273px;
+}
+.content4 {
+  margin-left: 80px;
+}
+@media (max-width: 980px) {
+  .content {
+    margin-left: 0;
+  }
+  .content4 {
+    margin-left: 0;
+  }
+}
 .toggle {
   position: fixed;
   border-radius: 5px;

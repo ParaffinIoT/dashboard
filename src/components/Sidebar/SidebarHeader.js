@@ -1,6 +1,5 @@
 import Link from "next/link";
 import React from "react";
-import "../../stylesheets/Sidebar.scss";
 class SidebarHeader extends React.Component {
   constructor(props) {
     super(props);
@@ -18,7 +17,7 @@ class SidebarHeader extends React.Component {
         </Link>
         <span
           style={{
-            fontSize: 30,
+            fontSize: 20,
             cursor: "pointer",
             color: "#ffff",
             float: "right"

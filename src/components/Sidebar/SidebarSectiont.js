@@ -1,6 +1,7 @@
 import React from "react";
-import "../../stylesheets/Sidebar.scss";
-
+import { Link } from "next/link";
+import { Menu, Icon } from "antd";
+const SubMenu = Menu.SubMenu;
 let SidebarSection = () => {
   return (
     <div id="cssmenu">

@@ -4,7 +4,6 @@ import SideBarHeader2 from "../Sidebar/HideSideBar";
 import SideBarSection from "../Sidebar/SidebarSectiont";
 import SidebarToggle from "../Sidebar/SidebarToggle";
 import SideBarFooter from "../Sidebar/FooterMenu";
-import "../../stylesheets/Sidebar.scss";
 import "../../stylesheets/Dashboard.scss";
 class Layout extends Component {
   constructor(props) {
@@ -33,10 +32,15 @@ class Layout extends Component {
         <SideBarHeader2 callback={this.toggle} />
       </div>
     );
+
     return (
       <div className="dashboard">
         <div className="topnav" style={{ marginLeft: seachBarMargin }}>
-          <input type="text" placeholder="Search.." />
+          <input
+            type="text"
+            placeholder="Search.."
+            style={{ marginTop: "15px" }}
+          />
         </div>
         <div className={contentClass}>
           <h1>Hello</h1>

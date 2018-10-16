@@ -1,6 +1,5 @@
 import React from "react";
-import "../../stylesheets/Sidebar.scss";
-
+import HideSideBarFooter from "../Sidebar/hidefootermenu";
 class SidebarHeader2 extends React.Component {
   constructor(props) {
     super(props);
@@ -57,6 +56,7 @@ class SidebarHeader2 extends React.Component {
             </li>
           </ul>
         </div>
+        <HideSideBarFooter />
       </div>
     );
   }
