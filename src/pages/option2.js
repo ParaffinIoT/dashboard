@@ -7,7 +7,7 @@ class option2 extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      collapsed: false
+      iscollapsed: true
     };
   }
 
@@ -15,7 +15,9 @@ class option2 extends React.Component {
     return (
       <Layout2 defaultKey="3">
         <Breadcrumb style={{ margin: "16px 0" }}>
-          <Breadcrumb.Item>option2</Breadcrumb.Item>
+          <Breadcrumb.Item>
+            <b style={{ fontStyle: "italic", fontWeight: "bold" }}>option2</b>{" "}
+          </Breadcrumb.Item>
         </Breadcrumb>
         <div style={{ padding: 24, background: "#fff", minHeight: 360 }}>
           This place is option 2 page

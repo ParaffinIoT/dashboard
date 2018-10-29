@@ -1,109 +1,67 @@
 import React from "react";
+import { connect } from "react-redux";
 import SideBarHeader from "../Sidebar/SidebarHeader";
 import FooterMenu from "../Sidebar/FooterMenu";
 import HideFooterMenu from "../Sidebar/hidefootermenu";
 import HideSideBarHeader from "../Sidebar/hide-sidebar-header";
-import { Layout, Menu, Icon } from "antd";
-import Link from "next/link";
-const { Header, Content, Footer, Sider } = Layout;
-const { SubMenu } = Menu;
-
+import MinSidebarHeader from "../Sidebar/minSidebarHeader";
+import NosideBarHeader from "../Sidebar/Nosidebarheader";
+import ContentHeader from "../header/header";
+import { sidebarCollapse } from "../../redux/reducersAndActions/sidebarState";
+import { Layout, Avatar, Input, Badge, Icon } from "antd";
+import Menus from "../menus/menus";
+const { Header, Content, Footer } = Layout;
+const Search = Input.Search;
 class SiderDemo extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      collapsed: false
-    };
     this.onCollapse = this.onCollapse.bind(this);
   }
 
   onCollapse = collapsed => {
-    console.log(collapsed);
-    this.setState({ collapsed: !this.state.collapsed });
+    this.props.sidebarCollapse(!this.props.collapsed.collapsed);
   };
 
   render() {
-    let sidebar = this.state.collapsed ? "sidebar2" : "sidebarLayout";
-    let contentClass = this.state.collapsed ? "content4" : "content3";
-    let HEADER = this.state.collapsed ? (
+    let sidebar = this.props.collapsed.collapsed ? "sidebar2" : "sidebarLayout";
+    let contentClass = this.props.collapsed.collapsed ? "content4" : "content3";
+    let HEADER = this.props.collapsed.collapsed ? (
       <HideSideBarHeader callback={this.onCollapse} />
     ) : (
       <SideBarHeader callback={this.onCollapse} />
     );
-    let FOOTER = this.state.collapsed ? <HideFooterMenu /> : <FooterMenu />;
+    let FOOTER = this.props.collapsed.collapsed ? (
+      <HideFooterMenu />
+    ) : (
+      <FooterMenu />
+    );
+
+    let minSidebarDisplay = this.props.minCollapse.minCollapse
+      ? "none"
+      : "block";
     return (
       <Layout style={{ minHeight: "100vh" }}>
-        <Sider
-          collapsed={this.state.collapsed}
-          onCollapse={this.onCollapse}
-          width="270"
-          style={{ top: 0, left: 0, bottom: 0, position: "fixed" }}
-        >
+        <div className={sidebar}>
           {HEADER}
           <div className="logo" />
-          <Menu
-            theme="dark"
-            defaultSelectedKeys={[this.props.defaultKey]}
-            mode="inline"
-          >
-            <Menu.Item key="1">
-              <Link href="/layout2">
-                <a>
-                  <Icon type="pie-chart" />
-                  <span>Home</span>
-                </a>
-              </Link>
-            </Menu.Item>
-            <Menu.Item key="2">
-              <Link href="/option1">
-                <a>
-                  <Icon type="pie-chart" />
-                  <span>Option 1</span>
-                </a>
-              </Link>
-            </Menu.Item>
-            <Menu.Item key="3">
-              <Link href="/option2">
-                <a>
-                  <Icon type="desktop" />
-                  <span>Option 2</span>
-                </a>
-              </Link>
-            </Menu.Item>
-            <SubMenu
-              key="sub1"
-              title={
-                <span>
-                  <Icon type="user" />
-                  <span>User</span>
-                </span>
-              }
-            >
-              <Menu.Item key="4">Tom</Menu.Item>
-              <Menu.Item key="5">Bill</Menu.Item>
-              <Menu.Item key="6">Alex</Menu.Item>
-            </SubMenu>
-            <SubMenu
-              key="sub2"
-              title={
-                <span>
-                  <Icon type="team" />
-                  <span>Team</span>
-                </span>
-              }
-            >
-              <Menu.Item key="6">Team 1</Menu.Item>
-              <Menu.Item key="8">Team 2</Menu.Item>
-            </SubMenu>
-            <Menu.Item key="9">
-              <Icon type="file" />
-              <span>File</span>
-            </Menu.Item>
-          </Menu>
+          <Menus
+            defaultKey={this.props.defaultKey}
+            incollapsed={this.props.collapsed.collapsed}
+          />
           {FOOTER}
-        </Sider>
+        </div>
+        <div className="minSidebar sidebar2">
+          <MinSidebarHeader />
+          <div className="logo" />
+          <Menus defaultKey={this.props.defaultKey} incollapsed={true} />
+          <HideFooterMenu />
+        </div>
+
         <Layout className={contentClass}>
-          <Header style={{ background: "#fff", padding: 0 }} />
+          <ContentHeader />
+          <div className="noSideBarHeader">
+            <NosideBarHeader />
+          </div>
           <Content style={{ margin: "0 16px" }}>{this.props.children}</Content>
           <Footer style={{ textAlign: "center" }}>
             Paraffin IoT ©2018 Created by Paraffin IoT team
@@ -113,4 +71,15 @@ class SiderDemo extends React.Component {
     );
   }
 }
-export default SiderDemo;
+
+const mapStateToProps = state => ({
+  collapsed: state.sidebarCollapseReducer,
+  minCollapse: state.minSidebarCollapseReducer
+});
+const mapDispatchToProps = {
+  sidebarCollapse
+};
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SiderDemo);

@@ -4,6 +4,7 @@ import SideBarHeader2 from "../Sidebar/HideSideBar";
 import SideBarSection from "../Sidebar/SidebarSectiont";
 import SidebarToggle from "../Sidebar/SidebarToggle";
 import SideBarFooter from "../Sidebar/FooterMenu";
+import Menus from "../menus/menus";
 import "../../stylesheets/Dashboard.scss";
 class Layout extends Component {
   constructor(props) {
@@ -19,12 +20,12 @@ class Layout extends Component {
   }
 
   render() {
-    let seachBarMargin = this.state.isOpen ? "260px" : "50px";
+    let seachBarMargin = this.state.isOpen ? "230px" : "50px";
     let contentClass = this.state.isOpen ? "content" : "content2";
     let CurrentSideBarSection = this.state.isOpen ? (
       <div className="sidebar">
         <SideBarHeader callback={this.toggle} />
-        <SideBarSection />
+        <Menus />
         <SideBarFooter />
       </div>
     ) : (
@@ -45,7 +46,10 @@ class Layout extends Component {
         <div className={contentClass}>
           <h1>Hello</h1>
         </div>
-        <div>{CurrentSideBarSection}</div>
+        <div className="sidebar">
+          <SideBarHeader callback={this.toggle} />
+          <Menus />
+        </div>
 
         <SidebarToggle />
       </div>

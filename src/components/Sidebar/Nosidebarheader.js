@@ -7,6 +7,17 @@ class SidebarHeader extends React.Component {
   render() {
     return (
       <div className="header">
+        <span
+          style={{
+            fontSize: 20,
+            cursor: "pointer",
+            color: "#ffff",
+            float: "left"
+          }}
+        >
+          &#9776;{" "}
+        </span>
+
         <Link href="/">
           <a className="logo" />
         </Link>
@@ -15,17 +26,6 @@ class SidebarHeader extends React.Component {
             <div>ParrafinIoT Dashboard</div>
           </div>
         </Link>
-        <span
-          style={{
-            fontSize: 20,
-            cursor: "pointer",
-            color: "#ffff",
-            float: "right"
-          }}
-          onClick={() => this.props.callback(false)}
-        >
-          &#9776;{" "}
-        </span>
       </div>
     );
   }

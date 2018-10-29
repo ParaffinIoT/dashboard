@@ -6,9 +6,6 @@ import { Breadcrumb } from "antd";
 class option1 extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      collapsed: false
-    };
   }
 
   render() {
