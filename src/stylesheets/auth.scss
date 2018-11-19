@@ -1,0 +1,111 @@
+//Login//////////////////////////////////////////
+.login-form {
+  max-width: 400px;
+}
+.signup-title {
+  margin-top: 10vh;
+  text-align: center;
+  font-size: 30px;
+  text-shadow: 2px 2px 1px rgba(0, 0, 0, 0.52);
+}
+.login-form-forgot {
+  float: right;
+}
+.login-form-button {
+  width: 100%;
+  margin-top: 15px;
+}
+.ant-btn-default {
+  background-color: #2e3c56;
+  color: #ffffff;
+}
+.ant-btn-default:hover {
+  background-color: #2e3c56;
+  color: #ffffff;
+}
+
+.ant-btn-default > span {
+  color: "#ffffff";
+}
+.float {
+  display: inline-block;
+  -webkit-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+  -webkit-transition-property: transform;
+  transition-property: transform;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+}
+
+.register-pg #prefix {
+  width: 90px !important;
+}
+
+@media only screen and (max-width: 480px) {
+  .login-pg .ant-col-6 {
+    width: 80%;
+    text-align: center;
+  }
+  .login-pg .ant-col-offset-9 {
+    margin-left: 10%;
+  }
+  .register-pg .ant-col-12 {
+    width: 80%;
+  }
+
+  .register-pg .ant-col-offset-4 {
+    margin-left: 10%;
+  }
+}
+
+@media only screen and (min-width: 481px) and (max-width: 767px) {
+  .login-pg .ant-col-6 {
+    width: 70%;
+  }
+  .login-pg .ant-col-offset-9 {
+    margin-left: 15%;
+  }
+
+  .register-pg .ant-col-12 {
+    width: 70%;
+  }
+
+  .register-pg .ant-col-offset-4 {
+    margin-left: 15%;
+  }
+}
+
+@media only screen and (min-width: 767px) and (max-width: 1023px) {
+  .login-pg .ant-col-6 {
+    width: 44%;
+  }
+  .login-pg .ant-col-offset-9 {
+    margin-left: 28%;
+  }
+  .register-pg .ant-col-12 {
+    width: 64%;
+  }
+
+  .register-pg .ant-col-offset-4 {
+    margin-left: 18%;
+  }
+}
+
+@media only screen and (min-width: 1024px) and (max-width: 1283px) {
+  .login-pg .ant-col-6 {
+    width: 30%;
+  }
+  .login-pg .ant-col-offset-9 {
+    margin-left: 35%;
+  }
+  .register-pg .ant-col-12 {
+    width: 56%;
+  }
+
+  .register-pg .ant-col-offset-4 {
+    margin-left: 22%;
+  }
+}
+
+////////////////////////////////////////////////////
