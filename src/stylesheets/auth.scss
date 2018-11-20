@@ -15,12 +15,21 @@
   width: 100%;
   margin-top: 15px;
 }
-.ant-btn-default {
-  background-color: #2e3c56;
+.register-pg .ant-btn-default {
+  background-color: #2e3c56 !important;
   color: #ffffff;
 }
-.ant-btn-default:hover {
-  background-color: #2e3c56;
+.register-pg .ant-btn-default:hover {
+  background-color: #2e3c56 !important;
+  color: #ffffff;
+}
+
+.login-pg .ant-btn-default {
+  background-color: #2e3c56 !important;
+  color: #ffffff;
+}
+.login-pg .ant-btn-default:hover {
+  background-color: #2e3c56 !important;
   color: #ffffff;
 }
 
