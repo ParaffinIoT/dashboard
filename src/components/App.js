@@ -6,6 +6,7 @@ import themes, { overrides } from '../themes';
 import Layout from './Layout';
 import Error from '../pages/error';
 import Login from '../pages/login';
+import Clients from "../pages/clients"
 
 const theme = createMuiTheme({...themes.default, ...overrides});
 
@@ -50,9 +51,10 @@ const App = () => (
   <MuiThemeProvider theme={theme}>
     <BrowserRouter>
       <Switch>
-        <Route exact path="/" render={() => <Redirect to="/app/dashboard" />} />
+        <Route exact path="/" render={() => <Redirect to="/clients" />} />
         <Route exact path="/app" render={() => <Redirect to="/app/dashboard" />} />
         <PrivateRoute path="/app" component={Layout} />
+        <PrivateRoute path="/clients" component={Clients} />
         <PublicRoute path="/login" component={Login} />
         <Route component={Error} />
       </Switch>

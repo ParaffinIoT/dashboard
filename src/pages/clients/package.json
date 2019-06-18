@@ -1,0 +1,7 @@
+{
+    "name": "Client",
+    "version": "0.0.0",
+    "main": "ClientContainer.js",
+    "private": true
+  }
+  

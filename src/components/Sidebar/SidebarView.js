@@ -49,6 +49,7 @@ const structure = [
 ];
 
 const SidebarView = ({ classes, theme, toggleSidebar, isSidebarOpened, isPermanent, location }) => {
+  console.log(location)
   return (
     <Drawer
       variant={isPermanent ? 'permanent' : 'temporary'}

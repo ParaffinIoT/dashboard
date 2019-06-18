@@ -19,7 +19,7 @@ const Login = ({ classes, ...props }) => (
   <Grid container className={classes.container}>
     <div className={classes.logotypeContainer}>
       <img src={logo} alt="logo" className={classes.logotypeImage} />
-      <Typography className={classes.logotypeText}>Material Admin</Typography>
+      <Typography className={classes.logotypeText}>ParaffinIoT</Typography>
     </div>
     <div className={classes.formContainer}>
       <div className={classes.form}>
@@ -207,7 +207,7 @@ const Login = ({ classes, ...props }) => (
         )}
       </div>
       <Typography color="primary" className={classes.copyright}>
-        © 2014-2019 Flatlogic, LLC. All rights reserved.
+        © 2019 ParaffinIoT. All rights reserved.
       </Typography>
     </div>
   </Grid>
