@@ -25,7 +25,7 @@ const Layout = ({ classes, isSidebarOpened, toggleSidebar }) => (
         <div className={classnames(classes.content, { [classes.contentShift]: isSidebarOpened })}>
           <div className={classes.fakeToolbar} />
           <Switch>
-            <Route path="/app/dashboard" component={Dashboard} />
+            <Route path="/clients/dashboard/:id" component={Dashboard} />
             <Route path="/app/typography" component={Typography} />
             <Route path="/app/tables" component={Tables} />
             <Route path="/app/notifications" component={Notifications} />

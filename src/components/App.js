@@ -52,8 +52,8 @@ const App = () => (
     <BrowserRouter>
       <Switch>
         <Route exact path="/" render={() => <Redirect to="/clients" />} />
-        <Route exact path="/app" render={() => <Redirect to="/app/dashboard" />} />
-        <PrivateRoute path="/app" component={Layout} />
+        <Route exact path="/client/:id" render={() => <Redirect to="/clients/dashboard/:id" />} />
+        <PrivateRoute path="/clients/:id" component={Layout} />
         <PrivateRoute path="/clients" component={Clients} />
         <PublicRoute path="/login" component={Login} />
         <Route component={Error} />
