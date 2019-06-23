@@ -13,6 +13,7 @@ export default compose(
   connect(
     state => ({
       isSidebarOpened: state.layout.isSidebarOpened,
+      client:state.client.client
     }),
     { toggleSidebar },
   ),

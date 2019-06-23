@@ -15,7 +15,7 @@ import Tables from '../../pages/tables';
 import Icons from '../../pages/icons';
 import Charts from '../../pages/charts';
 
-const Layout = ({ classes, isSidebarOpened, toggleSidebar }) => (
+const Layout = ({ classes, isSidebarOpened, toggleSidebar, client }) => (
   <div className={classes.root}>
     <CssBaseline />
     <BrowserRouter>
@@ -26,13 +26,13 @@ const Layout = ({ classes, isSidebarOpened, toggleSidebar }) => (
           <div className={classes.fakeToolbar} />
           <Switch>
             <Route path="/clients/dashboard/:id" component={Dashboard} />
-            <Route path="/app/typography" component={Typography} />
-            <Route path="/app/tables" component={Tables} />
-            <Route path="/app/notifications" component={Notifications} />
-            <Route exact path="/app/ui" render={() => <Redirect to="/app/ui/icons" />} />
-            <Route path="/app/ui/maps" component={Maps} />
-            <Route path="/app/ui/icons" component={Icons} />
-            <Route path="/app/ui/charts" component={Charts} />
+            <Route path="/clients/typography/:id" component={Typography} />
+            <Route path="/clients/tables/:id" component={Tables} />
+            <Route path="/clients/notifications/:id" component={Notifications} />
+            <Route exact path="/clients/ui/:id" render={() => <Redirect to={`/clients/ui/icons/${client}`} />} />
+            <Route path="/clients/ui/maps/:id" component={Maps} />
+            <Route path="/clients/ui/icons/:id" component={Icons} />
+            <Route path="/clients/ui/charts:id" component={Charts} />
           </Switch>
         </div>
       </React.Fragment>

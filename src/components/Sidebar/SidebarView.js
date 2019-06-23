@@ -20,26 +20,26 @@ import classNames from 'classnames';
 import SidebarLink from './components/SidebarLink/SidebarLinkContainer';
 import Dot from './components/Dot';
 
-const structure = [
-  { id: 0, label: 'Dashboard', link: '/app/dashboard', icon: <HomeIcon /> },
-  { id: 1, label: 'Typography', link: '/app/typography', icon: <TypographyIcon /> },
-  { id: 2, label: 'Tables', link: '/app/tables', icon: <TableIcon /> },
-  { id: 3, label: 'Notifications', link: '/app/notifications', icon: <NotificationsIcon />},
+const structure = (client) => [
+  { id: 0, label: 'Dashboard', link: `/clients/dashboard/${client}`, icon: <HomeIcon /> },
+  { id: 1, label: 'Typography', link: `/clients/typography/${client}`, icon: <TypographyIcon /> },
+  { id: 2, label: 'Tables', link: `/clients/tables/${client}`, icon: <TableIcon /> },
+  { id: 3, label: 'Notifications', link: `/clients/notifications/${client}`, icon: <NotificationsIcon />},
   {
     id: 4,
     label: 'UI Elements',
-    link: '/app/ui',
+    link: `/clients/ui/${client}`,
     icon: <UIElementsIcon />,
     children: [
-      { label: 'Icons', link: '/app/ui/icons' },
-      { label: 'Charts', link: '/app/ui/charts' },
-      { label: 'Maps', link: '/app/ui/maps' },
+      { label: 'Icons', link: `/clients/ui/icons/${client}` },
+      { label: 'Charts', link: `/clients/ui/charts/${client}` },
+      { label: 'Maps', link: `/clients/ui/maps/${client}` },
     ],
   },
   // { id: 5, type: 'divider' },
   // { id: 6, type: 'title', label: 'HELP' },
   // { id: 7, label: 'Library', link: '', icon: <LibraryIcon /> },
-  // { id: 8, label: 'Support', link: '', icon: <SupportIcon /> },
+  // { id: 8, label: 'Support', link: '', icon: <SuppojfjfjfjfjrtIcon /> },
   // { id: 9, label: 'FAQ', link: '', icon: <FAQIcon />},
   // { id: 10, type: 'divider' },
   // { id: 11, type: 'title', label: 'PROJECTS' },
@@ -48,7 +48,7 @@ const structure = [
   // { id: 14, label: 'Background', link: '', icon: <Dot size="large" color="secondary" /> },
 ];
 
-const SidebarView = ({ classes, theme, toggleSidebar, isSidebarOpened, isPermanent, location }) => {
+const SidebarView = ({ classes, theme, toggleSidebar, isSidebarOpened, client, isPermanent, location }) => {
   console.log(location)
   return (
     <Drawer
@@ -74,7 +74,7 @@ const SidebarView = ({ classes, theme, toggleSidebar, isSidebarOpened, isPermane
         </IconButton>
       </div>
       <List className={classes.sidebarList}>
-        {structure.map(link => <SidebarLink key={link.id} location={location} isSidebarOpened={isSidebarOpened} {...link} />)}
+        {structure(client).map(link => <SidebarLink key={link.id} location={location} isSidebarOpened={isSidebarOpened} {...link} />)}
       </List>
     </Drawer>
   );

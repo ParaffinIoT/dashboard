@@ -70,6 +70,7 @@ const Dashboard = ({ classes, theme, ...props }) => {
                     color="primary"
                     size="large"
                     className={classes.forgetButton}
+                    onClick = {()=>props.handleSetClient(value.id)}
                   >
                     Select
                   </Button>

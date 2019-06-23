@@ -22,6 +22,7 @@
     "recharts": "^1.5.0",
     "recompose": "^0.30.0",
     "redux": "^4.0.1",
+    "redux-persist": "^5.10.0",
     "redux-thunk": "^2.3.0",
     "tinycolor2": "^1.4.1"
   },
