@@ -15,62 +15,35 @@ import { Typography } from "../../components/Wrappers";
 import { Link } from "react-router-dom";
 import Header from "../../components/Header";
 
-const Dashboard = ({ classes, theme, ...props }) => {
+
+const Dashboard = ({ classes, theme, client, history, ...props }) => {
   return (
     <React.Fragment>
       <CssBaseline />
       <Header />
       <div className={classes.content} />
 
-      <PageTitle title="Clients" button="Add New Clients" />
-      <Grid container spacing={32}>
-        {[
-          { client: "Smart Home", version: "1.0.1", id: "smart-home" },
-          {
-            client: "Humidty Detector",
-            version: "1.0.2",
-            id: "humidity-detection"
-          },
-          {
-            client: "Plant Disease Detector",
-            version: "1.0.2",
-            id: "plant-disease-detector"
-          },
-          {
-            client: "Rainfall Detector",
-            version: "1.0.3",
-            id: "rainfall-detection"
-          },
-          {
-            client: "Earthquake Detector",
-            version: "1.0.2",
-            id: "earthquake-detection"
-          },
-          { client: "Fire Detector", version: "1.0.3", id: "fire-detection" },
-          {
-            client: "Plane Crush Detector",
-            version: "1.0.2",
-            id: "plane-crush-detection"
-          }
-        ].map((value, index) => {
+      <PageTitle title="Clients" button="Add New Clients" onBtnClick={ ()=> history.push("/add-client") } />
+      <Grid container spacing={4}>
+        {client.user_clients.map((value, index) => {
           return (
             <Grid item lg={3} md={4} sm={6} xs={12} key={index}>
               <Widget
-                title={value.client}
+                title={value.clientName}
                 upperTitle
                 className={classes.card}
                 bodyClass={classes.fullHeightBody}
               >
                 <div className={classes.btnContainer}>
-                  <small className={classes.version}>Version: {value.version}</small>
+                  <small className={classes.version}>Version: {value.ver}</small>
 
                   <Button
                     component={Link}
-                    to={`clients/dashboard/${value.id}`}
+                    to={`clients/dashboard/${value.clientId}`}
                     color="primary"
                     size="large"
                     className={classes.forgetButton}
-                    onClick = {()=>props.handleSetClient(value.id)}
+                    onClick = {()=>props.handleSetClient(value.clientId)}
                   >
                     Select
                   </Button>
@@ -92,7 +65,7 @@ const styles = theme => ({
     minHeight: "100%",
     display: "flex",
     flexDirection: "column",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
   },
   fullHeightBody: {
     height: "23vh"

@@ -9,7 +9,7 @@ import SidebarView from './SidebarView';
 
 export default compose(
   withRouter,
-  withTheme(),
+  withTheme,
   connect(
     state => ({
       isSidebarOpened: state.layout.isSidebarOpened,

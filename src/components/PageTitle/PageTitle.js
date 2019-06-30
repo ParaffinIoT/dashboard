@@ -13,6 +13,7 @@ const PageTitle = ({ classes, ...props }) => (
         variant="contained"
         size="large"
         color="secondary"
+        onClick = {props.onBtnClick}
       >
         {props.button}
       </Button>

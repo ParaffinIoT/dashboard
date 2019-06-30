@@ -102,4 +102,4 @@ const ApexLineChart = (props) => (
   <ApexCharts options={themeOptions(props)} series={series} type="heatmap" height={350} />
 );
 
-export default withTheme()(ApexLineChart);
+export default withTheme(ApexLineChart);

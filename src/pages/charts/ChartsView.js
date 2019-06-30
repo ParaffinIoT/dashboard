@@ -157,4 +157,4 @@ const ChartsView = (props) => (
     </React.Fragment>
 );
 
-export default withTheme()(ChartsView);
+export default withTheme(ChartsView);

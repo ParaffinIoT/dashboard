@@ -7,6 +7,7 @@ import Layout from './Layout';
 import Error from '../pages/error';
 import Login from '../pages/login';
 import Clients from "../pages/clients"
+import AddClient from "../pages/add-client"
 
 const theme = createMuiTheme({...themes.default, ...overrides});
 
@@ -54,8 +55,10 @@ const App = () => (
         <Route exact path="/" render={() => <Redirect to="/clients" />} />
         <Route exact path="/client/:id" render={() => <Redirect to="/clients/dashboard/:id" />} />
         <PrivateRoute path="/clients/:id" component={Layout} />
-        <PrivateRoute path="/clients" component={Clients} />
+        <PrivateRoute exact path="/clients" component={Clients} />
         <PublicRoute path="/login" component={Login} />
+        <PrivateRoute exact path="/add-client" component={AddClient} />
+
         <Route component={Error} />
       </Switch>
     </BrowserRouter>

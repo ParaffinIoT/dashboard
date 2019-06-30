@@ -112,7 +112,7 @@ const TypographyExtended = ({ theme, children, weight, size, colorBrightness, ..
   </TypographyBase>
 );
 
-export const Typography = withTheme()(TypographyExtended);
+export const Typography = withTheme(TypographyExtended);
 
 const ButtonExtended = ({ theme, children, ...props }) => {
   const Styled = createStyled({
@@ -138,4 +138,4 @@ const ButtonExtended = ({ theme, children, ...props }) => {
   );
 };
 
-export const Button = withTheme()(ButtonExtended);
+export const Button = withTheme(ButtonExtended);
