@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import HeaderView from './HeaderView';
 import { signOut } from '../../pages/login/LoginState';
 import { toggleSidebar } from '../Layout/LayoutState';
+const Parse = window.Parse
+var currentUser = Parse.User.current();
 
 export default compose(
   connect(
@@ -18,6 +20,7 @@ export default compose(
   withState('isNotificationsUnread', 'setIsNotificationsUnread', true),
   withState('profileMenu', 'setProfileMenu', null),
   withState('isSearchOpen', 'setSearchOpen', false),
+
   withHandlers({
     openMailMenu: props => event => {
       props.setMailMenu(event.currentTarget);
@@ -41,6 +44,6 @@ export default compose(
     },
     closeProfileMenu: props => () => {
       props.setProfileMenu(null);
-    },
+    }
   })
 )(HeaderView);

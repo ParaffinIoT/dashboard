@@ -24,6 +24,9 @@ import classNames from "classnames";
 import { Badge, Typography } from "../Wrappers";
 import Notification from "../Notification";
 import UserAvatar from "../UserAvatar";
+const Parse = window.Parse
+
+
 
 const messages = [
   {
@@ -78,7 +81,9 @@ const notifications = [
   }
 ];
 
-const Header = ({ classes, isSidebarOpened, toggleSidebar, ...props }) => (
+const Header = ({ classes, isSidebarOpened, toggleSidebar, ...props }) =>{ 
+  var currentUser = Parse.User.current();
+  return (
   <AppBar position="fixed" className={classes.appBar}>
     <Toolbar className={classes.toolbar}>
       <IconButton
@@ -247,15 +252,15 @@ const Header = ({ classes, isSidebarOpened, toggleSidebar, ...props }) => (
       >
         <div className={classes.profileMenuUser}>
           <Typography variant="h4" weight="medium">
-            John Smith
+            {currentUser.get("username")}
           </Typography>
           <Typography
             className={classes.profileMenuLink}
-            component="a"
+            variant="h6"
             color="primary"
-            href="https://flatlogic.com"
+          
           >
-            Flalogic.com
+          {currentUser.get("email")}
           </Typography>
         </div>
         <MenuItem
@@ -295,6 +300,7 @@ const Header = ({ classes, isSidebarOpened, toggleSidebar, ...props }) => (
     </Toolbar>
   </AppBar>
 );
+          }
 
 const styles = theme => ({
   logotype: {

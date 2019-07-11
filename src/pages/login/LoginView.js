@@ -49,22 +49,22 @@ const Login = ({ classes, ...props }) => (
             </div>
             <Fade in={props.error}>
               <Typography color="secondary" className={classes.errorMessage}>
-                Something is wrong with your login or password :(
+               {props.errorMsg}
               </Typography>
             </Fade>
             <TextField
-              id="email"
+              id="name"
               InputProps={{
                 classes: {
                   underline: classes.textFieldUnderline,
                   input: classes.textField
                 }
               }}
-              value={props.loginValue}
-              onChange={e => props.handleInput(e, "login")}
+              value={props.nameValue}
+              onChange={e => props.handleInput(e, "name")}
               margin="normal"
-              placeholder="Email Adress"
-              type="email"
+              placeholder="Username"
+              type="text"
               fullWidth
             />
             <TextField
@@ -88,7 +88,7 @@ const Login = ({ classes, ...props }) => (
               ) : (
                 <Button
                   disabled={
-                    props.loginValue.length === 0 ||
+                    props.nameValue.length === 0 ||
                     props.passwordValue.length === 0
                   }
                   onClick={props.handleLoginButtonClick}
@@ -119,7 +119,7 @@ const Login = ({ classes, ...props }) => (
             </Typography>
             <Fade in={props.error}>
               <Typography color="secondary" className={classes.errorMessage}>
-                Something is wrong with your login or password :(
+               {props.errorMsg}
               </Typography>
             </Fade>
             <TextField
@@ -133,8 +133,8 @@ const Login = ({ classes, ...props }) => (
               value={props.nameValue}
               onChange={e => props.handleInput(e, "name")}
               margin="normal"
-              placeholder="Full Name"
-              type="email"
+              placeholder="Username"
+              type="text"
               fullWidth
             />
             <TextField
@@ -145,8 +145,8 @@ const Login = ({ classes, ...props }) => (
                   input: classes.textField
                 }
               }}
-              value={props.loginValue}
-              onChange={e => props.handleInput(e, "login")}
+              value={props.emailValue}
+              onChange={e => props.handleInput(e, "email")}
               margin="normal"
               placeholder="Email Adress"
               type="email"
@@ -172,9 +172,9 @@ const Login = ({ classes, ...props }) => (
                 <CircularProgress size={26} />
               ) : (
                 <Button
-                  onClick={props.handleLoginButtonClick}
+                  onClick={props.handleSignUpButtonClick}
                   disabled={
-                    props.loginValue.length === 0 ||
+                    props.emailValue.length === 0 ||
                     props.passwordValue.length === 0 ||
                     props.nameValue.length === 0
                   }

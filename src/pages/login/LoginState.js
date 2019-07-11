@@ -1,7 +1,9 @@
+const Parse = window.Parse
 export const initialState = {
   isLoading: false,
-  isAuthenticated: !!localStorage.getItem("id_token"),
-  error: null
+  isAuthenticated:Parse.User.current(),
+  error: null,
+  errorMsg:""
 };
 
 export const START_LOGIN = "Login/START_LOGIN";
@@ -19,33 +21,52 @@ export const loginSuccess = () => ({
   type: LOGIN_SUCCESS
 });
 
-export const loginFailure = () => ({
-  type: LOGIN_FAILURE
+export const loginFailure = (errorMsg) => ({
+  type: LOGIN_FAILURE, payload :{errorMsg}
 });
 
 export const resetError = () => ({
   type: RESET_ERROR
 });
 
-export const loginUser = (login, password) => dispatch => {
+export const loginUser = (name, password) => async dispatch => {
   dispatch(startLogin());
-
-  if (!!login && !!password) {
-    setTimeout(() => {
-      localStorage.setItem("id_token", "1");
+  if (name && password) {
+    try {
+      await Parse.User.logIn(name, password);
       dispatch(loginSuccess());
-    }, 2000);
+    } catch (error) {
+      dispatch(loginFailure(error.message));
+    }
   } else {
-    dispatch(loginFailure());
+    dispatch(loginFailure("Provide all required fields"));
   }
 };
+
+export const signUpUser = (name, email, password)=> async dispatch =>{
+  dispatch(startLogin())
+  if (name && email && password) { 
+    var user = new Parse.User();
+    user.set("username", name);
+    user.set("password", password);
+    user.set("email", email);
+    try {
+    await user.signUp();
+    dispatch(loginSuccess());
+    } catch (error) {
+      dispatch(loginFailure(error.message));
+    }
+  } else {
+    dispatch(loginFailure("Complete all required fields"));
+  }
+}
 
 export const signOutSuccess = () => ({
   type: SIGN_OUT_SUCCESS
 });
 
-export const signOut = () => dispatch => {
-  localStorage.removeItem("id_token");
+export const signOut = () => async dispatch => {
+ await Parse.User.logOut()
   dispatch(signOutSuccess());
 };
 
@@ -67,11 +88,13 @@ export default function LoginReducer(state = initialState, { type, payload }) {
       return {
         ...state,
         isLoading: false,
-        error: true
+        error: true,
+       errorMsg: payload.errorMsg
       };
     case RESET_ERROR:
       return {
-        error: false
+        error: false,
+        errorMsg:""
       };
     case SIGN_OUT_SUCCESS:
       return {

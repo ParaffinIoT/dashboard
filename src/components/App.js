@@ -8,14 +8,16 @@ import Error from '../pages/error';
 import Login from '../pages/login';
 import Clients from "../pages/clients"
 import AddClient from "../pages/add-client"
-
 const theme = createMuiTheme({...themes.default, ...overrides});
 
-const PrivateRoute = ({ component, ...rest }) => {
+const Parse = window.Parse
+var currentUser = Parse.User.current();
+
+const PrivateRoute = ({ component, isAuthenticated, ...rest }) => {
   return (
     <Route
       {...rest} render={props => (
-      localStorage.getItem('id_token') ? (
+        isAuthenticated ? (
         React.createElement(component, props)
       ) : (
         <Redirect
@@ -30,11 +32,11 @@ const PrivateRoute = ({ component, ...rest }) => {
   );
 };
 
-const PublicRoute = ({ component, ...rest }) => {
+const PublicRoute = ({ component, isAuthenticated, ...rest }) => {
   return (
     <Route
       {...rest} render={props => (
-      localStorage.getItem('id_token') ? (
+        isAuthenticated ? (
         <Redirect
           to={{
             pathname: '/',
@@ -48,16 +50,16 @@ const PublicRoute = ({ component, ...rest }) => {
   );
 };
 
-const App = () => (
+const App = (props) => (
   <MuiThemeProvider theme={theme}>
     <BrowserRouter>
       <Switch>
         <Route exact path="/" render={() => <Redirect to="/clients" />} />
         <Route exact path="/client/:id" render={() => <Redirect to="/clients/dashboard/:id" />} />
-        <PrivateRoute path="/clients/:id" component={Layout} />
-        <PrivateRoute exact path="/clients" component={Clients} />
-        <PublicRoute path="/login" component={Login} />
-        <PrivateRoute exact path="/add-client" component={AddClient} />
+        <PrivateRoute path="/clients/:id" component={Layout} isAuthenticated={props.isAuthenticated} />
+        <PrivateRoute exact path="/clients" component={Clients} isAuthenticated={props.isAuthenticated} />
+        <PublicRoute path="/login" component={Login} isAuthenticated={props.isAuthenticated} />
+        <PrivateRoute exact path="/add-client" component={AddClient} isAuthenticated={props.isAuthenticated} />
 
         <Route component={Error} />
       </Switch>
