@@ -7,7 +7,7 @@ import {
   KeyboardTimePicker,
   KeyboardDatePicker
 } from "@material-ui/pickers";
-import Header from "../../components/Header";
+import Header from "../../components/Header/HeaderContainer";
 import {
   Grid,
   Paper,
@@ -22,8 +22,11 @@ import {
   Input,
   MenuItem,
   Chip,
-  Checkbox
+  Checkbox,
+  CircularProgress,
+  Fade
 } from "@material-ui/core";
+import NotificationCustomComponent from "../../components/Notification";
 import classnames from "classnames";
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -38,30 +41,27 @@ const MenuProps = {
 
 const adapterList = ["mqtt", "http", "coap"];
 
-const AddClient = ({ classes }) => {
-  const [selectedDate, setSelectedDate] = React.useState(
-    new Date("2014-08-18T21:11:54")
-  );
-  const [adapters, setAdapters] = React.useState([]);
-
-  function handleChangeMultiple(event) {
-    const { options } = event.target;
-    const value = [];
-    for (let i = 0, l = options.length; i < l; i += 1) {
-      if (options[i].selected) {
-        value.push(options[i].value);
-      }
-    }
-    setAdapters(value);
-  }
-
-  function handleChange(event) {
-    setAdapters(event.target.value);
-  }
-
+const AddClient = ({ classes, ...props }) => {
   return (
     <Grid container className={classes.container}>
       <Header />
+      <Fade in={props.error}>
+        <Typography color="secondary" className={classes.errorMessage}>
+          {props.errorMsg}
+        </Typography>
+      </Fade>
+
+      {props.isSuccess && (
+        <NotificationCustomComponent
+          className={classes.notificationItem}
+          shadowless
+          type="customer"
+          message="New client added"
+          variant="contained"
+          color="success"
+        />
+      )}
+
       <Paper classes={{ root: classes.paperRoot }}>
         <Typography
           variant="h4"
@@ -73,6 +73,8 @@ const AddClient = ({ classes }) => {
         <TextField
           placeholder="Client Name"
           className={classnames(classes.textRow)}
+          onChange={e => props.setClientName(e.target.value)}
+          value={props.clientName}
           InputProps={{
             classes: {
               underline: classes.textFieldUnderline,
@@ -89,8 +91,8 @@ const AddClient = ({ classes }) => {
           <InputLabel htmlFor="select-multiple-chip">Adapters</InputLabel>
           <Select
             multiple
-            value={adapters}
-            onChange={handleChange}
+            value={props.adapters}
+            onChange={props.handleChange}
             input={<Input id="select-multiple-chip" fullWidth />}
             renderValue={selected => (
               <div className={classes.chips}>
@@ -103,7 +105,7 @@ const AddClient = ({ classes }) => {
           >
             {adapterList.map(name => (
               <MenuItem key={name} value={name}>
-                <Checkbox checked={adapters.indexOf(name) > -1} />
+                <Checkbox checked={props.adapters.indexOf(name) > -1} />
                 <ListItemText primary={name} />
               </MenuItem>
             ))}
@@ -120,8 +122,8 @@ const AddClient = ({ classes }) => {
               style={{ width: "49%" }}
               id="mui-pickers-date"
               label="Start after"
-              value={selectedDate}
-              onChange={value => setSelectedDate(value)}
+              value={props.startAfter}
+              onChange={value => props.setStartAfter(value)}
               KeyboardButtonProps={{
                 "aria-label": "change date"
               }}
@@ -132,22 +134,28 @@ const AddClient = ({ classes }) => {
               style={{ width: "49%" }}
               id="mui-pickers-date"
               label="Expires before"
-              value={selectedDate}
-              onChange={value => setSelectedDate(value)}
+              value={props.expiredBefore}
+              onChange={value => props.setExpiredBefore(value)}
               KeyboardButtonProps={{
                 "aria-label": "change date"
               }}
             />
           </Grid>
         </MuiPickersUtilsProvider>
-        <Button
-          variant="contained"
-          color="primary"
-          size="large"
-          className={classes.backButton}
-        >
-          Add Client
-        </Button>
+
+        {props.isLoading ? (
+          <CircularProgress size={26} />
+        ) : (
+          <Button
+            variant="contained"
+            color="primary"
+            size="large"
+            className={classes.backButton}
+            onClick={props.handleAddClientButtonClick}
+          >
+            Add Client
+          </Button>
+        )}
       </Paper>
     </Grid>
   );
@@ -228,6 +236,13 @@ const styles = theme => ({
   },
   chip: {
     margin: 2
+  },
+  errorMessage: {
+    textAlign: "center"
+  },
+  notificationItem: {
+    marginBottom: theme.spacing.unit * 3,
+    width: 460
   }
 });
 
