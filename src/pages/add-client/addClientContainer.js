@@ -1,5 +1,6 @@
 import { withHandlers, withState, lifecycle, compose } from "recompose";
 import AddClientView from "./addClientView";
+import AutoComplete from "./autocomplete"
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { addClient, resetError } from "./addClientState";
@@ -25,6 +26,12 @@ export default compose(
     addTopic: props => () => {
       props.setTopics([...props.topics, props.currentTopic]);
       props.setCurrentTopic("");
+    },
+
+    removeTopic:props=>key=>{
+      props.topics.splice(key, 1)
+      
+      alert(props.topics)
     },
     handleAddClientButtonClick: props => () => {
       props.addClient({
