@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import clsx from "clsx";
 import "date-fns";
 import DateFnsUtils from "@date-io/date-fns";
 import {
@@ -18,28 +19,41 @@ import {
   Select,
   FormControl,
   InputLabel,
-  ListItemText,
   Input,
   MenuItem,
   Chip,
   Checkbox,
   CircularProgress,
-  Fade
+  Fade,
+  Radio,
+  FormLabel,
+  FormControlLabel,
+  RadioGroup,
+  Icon,
+  IconButton,
+  List,
+  ListItem,
+  ListItemText
 } from "@material-ui/core";
+import AddIcon from "@material-ui/icons/Add";
+import DeleteIcon from "@material-ui/icons/Delete";
 import NotificationCustomComponent from "../../components/Notification";
+import { green } from "@material-ui/core/colors";
+import RadioButtonUncheckedIcon from "@material-ui/icons/RadioButtonUnchecked";
+import RadioButtonCheckedIcon from "@material-ui/icons/RadioButtonChecked";
+import { makeStyles } from "@material-ui/core/styles";
 import classnames from "classnames";
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250
-    }
-  }
-};
 
 const adapterList = ["mqtt", "http", "coap"];
+function generate(element) {
+  return [0, 1, 2].map(value =>
+    React.cloneElement(element, {
+      key: value
+    })
+  );
+}
 
 const AddClient = ({ classes, ...props }) => {
   return (
@@ -84,34 +98,120 @@ const AddClient = ({ classes, ...props }) => {
           fullWidth
         />
         <FormControl
-          className={classes.formControl}
-          className={classes.textRow}
+          component="fieldset"
+          className={classes.radioFormControl}
           fullWidth
         >
-          <InputLabel htmlFor="select-multiple-chip">Adapters</InputLabel>
-          <Select
-            multiple
-            value={props.adapters}
-            onChange={props.handleChange}
-            input={<Input id="select-multiple-chip" fullWidth />}
-            renderValue={selected => (
-              <div className={classes.chips}>
-                {selected.map(value => (
-                  <Chip key={value} label={value} className={classes.chip} />
-                ))}
-              </div>
-            )}
-            MenuProps={MenuProps}
+          <FormLabel component="legend">Adapter</FormLabel>
+
+          <RadioGroup
+            aria-label="Gender"
+            name="adapter"
+            className={classes.group}
+            value={props.adpter}
+            onChange={props.addAdapter}
+            row
           >
-            {adapterList.map(name => (
-              <MenuItem key={name} value={name}>
-                <Checkbox checked={props.adapters.indexOf(name) > -1} />
-                <ListItemText primary={name} />
-              </MenuItem>
-            ))}
-          </Select>
+            <FormControlLabel
+              value="http"
+              control={<Radio />}
+              label="HTTP"
+              classes={{
+                root: classes.labelRoot,
+                label: classes.labelLabel
+              }}
+            />
+            <FormControlLabel
+              value="mqtt"
+              control={<Radio />}
+              label="MQTT"
+              classes={{
+                root: classes.labelRoot,
+                label: classes.labelLabel
+              }}
+            />
+            <FormControlLabel
+              value="coap"
+              control={<Radio />}
+              label="COAP"
+              classes={{
+                root: classes.labelRoot,
+                label: classes.labelLabel
+              }}
+            />
+          </RadioGroup>
         </FormControl>
-        <MuiPickersUtilsProvider
+        <FormControl
+          component="fieldset"
+          fullWidth
+          className={classes.radioFormControl}
+        >
+          <FormLabel component="legend">Topics</FormLabel>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <TextField
+              placeholder="Topic, eg garden/lamp"
+              className={classnames(classes.textRow)}
+              value={props.currentTopic}
+              onChange={e => props.setCurrentTopic(e.target.value)}
+              InputProps={{
+                classes: {
+                  underline: classes.textFieldUnderline,
+                  input: classes.textField
+                }
+              }}
+              fullWidth
+            />
+
+            {/* <Button
+            style={{ marginRight: "auto", marginLeft: "auto" }}
+            color="primary"
+            size="small"
+            className={classes.backButton}
+            onClick={props.handleAddClientButtonClick}
+          >
+            Add Topic
+          </Button> */}
+            <Button
+              variant="contained"
+              size="small"
+              onClick={props.addTopic}
+              style={{
+                height: "31px",
+                marginLeft: "15px",
+                paddingRight: "15px"
+              }}
+            >
+              <AddIcon className={classes.iconSmall} />
+              Add
+            </Button>
+          </div>
+          <div className={classes.demo}>
+            <List
+              dense={true}
+              fullWidth
+              disablePadding={true}
+              classes={{ dense: classes.dense }}
+            >
+              {props.topics.map((value, index) => {
+                return (
+                  <ListItem
+                    dense={true}
+                    classes={{ dense: classes.dense }}
+                    key={index}
+                  >
+                    <ListItemText primary={value} />
+
+                    <IconButton edge="end" aria-label="Delete">
+                      <DeleteIcon color="error" />
+                    </IconButton>
+                  </ListItem>
+                );
+              })}
+            </List>
+          </div>
+        </FormControl>
+
+        {/* <MuiPickersUtilsProvider
           utils={DateFnsUtils}
           className={classes.textRow}
         >
@@ -141,17 +241,22 @@ const AddClient = ({ classes, ...props }) => {
               }}
             />
           </Grid>
-        </MuiPickersUtilsProvider>
-
+        </MuiPickersUtilsProvider> */}
         {props.isLoading ? (
           <CircularProgress size={26} />
         ) : (
           <Button
+            style={{ marginTop: "25px" }}
             variant="contained"
             color="primary"
-            size="large"
+            size="small"
             className={classes.backButton}
             onClick={props.handleAddClientButtonClick}
+            classes={{
+              containedPrimary: {
+                fontSize: classes.buttonText
+              }
+            }}
           >
             Add Client
           </Button>
@@ -163,16 +268,11 @@ const AddClient = ({ classes, ...props }) => {
 
 const styles = theme => ({
   container: {
-    height: "100vh",
     width: "100vw",
     display: "flex",
-    flexDirection: "column",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
     //  backgroundColor: theme.palette.primary.main,
-    position: "absolute",
-    top: 0,
-    left: 0
   },
   logotype: {
     display: "flex",
@@ -187,11 +287,12 @@ const styles = theme => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    paddingTop: theme.spacing.unit * 8,
+    marginTop: 90,
+    paddingTop: theme.spacing.unit * 5,
     paddingBottom: theme.spacing.unit * 8,
     paddingLeft: theme.spacing.unit * 6,
     paddingRight: theme.spacing.unit * 6,
-    width: 360
+    width: 340
   },
   textRow: {
     marginBottom: theme.spacing.unit * 3,
@@ -205,7 +306,7 @@ const styles = theme => ({
   backButton: {
     boxShadow: theme.customShadows.widget,
     textTransform: "none",
-    fontSize: 22
+    fontSize: "1rem"
   },
   textFieldUnderline: {
     "&:before": {
@@ -243,6 +344,28 @@ const styles = theme => ({
   notificationItem: {
     marginBottom: theme.spacing.unit * 3,
     width: 460
+  },
+  radioFormControl: {
+    margin: theme.spacing(1)
+  },
+  group: {
+    width: 360
+  },
+  labelRoot: {
+    fontSize: "0.9rem"
+  },
+  labelLabel: {
+    fontSize: "0.9rem"
+  },
+  iconSmall: {
+    fontSize: 20,
+    marginRight: theme.spacing(1)
+  },
+  dense: {
+    marginTop: "-25px"
+  },
+  buttonText: {
+    fontSize: "0.5rem"
   }
 });
 
