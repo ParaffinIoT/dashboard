@@ -1,4 +1,4 @@
-import React from "react";
+import React, {Fragment} from "react";
 import { Link } from "react-router-dom";
 import clsx from "clsx";
 import "date-fns";
@@ -44,42 +44,6 @@ import PropTypes from "prop-types";
 import deburr from "lodash/deburr";
 
 ////start/////
-const suggestions = [
-  { label: "Afghanistan" },
-  { label: "Aland Islands" },
-  { label: "Albania" },
-  { label: "Algeria" },
-  { label: "American Samoa" },
-  { label: "Andorra" },
-  { label: "Angola" },
-  { label: "Anguilla" },
-  { label: "Antarctica" },
-  { label: "Antigua and Barbuda" },
-  { label: "Argentina" },
-  { label: "Armenia" },
-  { label: "Aruba" },
-  { label: "Australia" },
-  { label: "Austria" },
-  { label: "Azerbaijan" },
-  { label: "Bahamas" },
-  { label: "Bahrain" },
-  { label: "Bangladesh" },
-  { label: "Barbados" },
-  { label: "Belarus" },
-  { label: "Belgium" },
-  { label: "Belize" },
-  { label: "Benin" },
-  { label: "Bermuda" },
-  { label: "Bhutan" },
-  { label: "Bolivia, Plurinational State of" },
-  { label: "Bonaire, Sint Eustatius and Saba" },
-  { label: "Bosnia and Herzegovina" },
-  { label: "Botswana" },
-  { label: "Bouvet Island" },
-  { label: "Brazil" },
-  { label: "British Indian Ocean Territory" },
-  { label: "Brunei Darussalam" }
-];
 
 function renderInput(inputProps) {
   const { InputProps, classes, ref, onChange, ...other } = inputProps;
@@ -108,19 +72,19 @@ function renderSuggestion(suggestionProps) {
     selectedItem
   } = suggestionProps;
   const isHighlighted = highlightedIndex === index;
-  const isSelected = (selectedItem || "").indexOf(suggestion.label) > -1;
-
+  const isSelected =
+    (selectedItem || "").indexOf(suggestion.get("clientName")) > -1;
   return (
     <MenuItem
       {...itemProps}
-      key={suggestion.label}
+      key={suggestion.get("clientName")}
       selected={isHighlighted}
       component="div"
       style={{
         fontWeight: isSelected ? 500 : 400
       }}
     >
-      {suggestion.label}
+      {suggestion.get("clientName")}
     </MenuItem>
   );
 }
@@ -132,39 +96,22 @@ renderSuggestion.propTypes = {
   suggestion: PropTypes.shape({ label: PropTypes.string }).isRequired
 };
 
-function getSuggestions(value, { showEmpty = false } = {}) {
-  const inputValue = deburr(value.trim()).toLowerCase();
-  const inputLength = inputValue.length;
-  let count = 0;
-
-  return inputLength === 0 && !showEmpty
-    ? []
-    : suggestions.filter(suggestion => {
-        const keep =
-          count < 5 &&
-          suggestion.label.slice(0, inputLength).toLowerCase() === inputValue;
-
-        if (keep) {
-          count += 1;
-        }
-
-        return keep;
-      });
-}
-
 ////end//////
 
 const AddClient = ({ classes, ...props }) => {
   return (
+    <Fragment>
+         <Header />
     <Grid container className={classes.container}>
-      <Header />
-      <Fade in={props.error}>
+
+
+<div style={{position:"relative", marginTop:"100px"}}> 
+<Fade in={!props.error}>
         <Typography color="secondary" className={classes.errorMessage}>
-          {props.errorMsg}
+      {props.errorMsg}
         </Typography>
       </Fade>
-
-      {props.isSuccess && (
+{props.isSuccess && (
         <NotificationCustomComponent
           className={classes.notificationItem}
           shadowless
@@ -174,7 +121,6 @@ const AddClient = ({ classes, ...props }) => {
           color="success"
         />
       )}
-
       <Paper classes={{ root: classes.paperRoot }}>
         <Typography
           variant="h4"
@@ -185,7 +131,12 @@ const AddClient = ({ classes, ...props }) => {
         </Typography>
         <Downshift
           id="downshift-simple"
-          onChange={value => props.setClientName(value)}
+          onChange={ async value => {
+          await  props.setClientName(value);
+            props.checkIfAdapterTypeExist()
+
+           
+          }}
         >
           {({
             getInputProps,
@@ -199,7 +150,12 @@ const AddClient = ({ classes, ...props }) => {
           }) => {
             const { onBlur, onFocus, ...inputProps } = getInputProps({
               placeholder: "Select or provide new client",
-              onChange: e => props.setClientName(e.target.value),
+              onChange: async e => {
+              await  props.setClientName(e.target.value);
+                props.checkIfAdapterTypeExist()
+              
+   
+              },
               value: props.clientName,
               classes: {
                 underline: classes.textFieldUnderline,
@@ -213,22 +169,29 @@ const AddClient = ({ classes, ...props }) => {
                   fullWidth: true,
                   classes,
                   label: "Client",
-                  InputLabelProps: getLabelProps({ shrink: true, className:classes.clientLabel }),
+                  InputLabelProps: getLabelProps({
+                    shrink: true,
+                    className: classes.clientLabel
+                  }),
                   InputProps: { onBlur, onFocus },
                   inputProps
                 })}
                 <div {...getMenuProps()}>
                   {isOpen ? (
                     <Paper className={classes.autoCompletePaper} square>
-                      {getSuggestions(inputValue).map((suggestion, index) =>
-                        renderSuggestion({
-                          suggestion,
-                          index,
-                          itemProps: getItemProps({ item: suggestion.label }),
-                          highlightedIndex,
-                          selectedItem
-                        })
-                      )}
+                      {props
+                        .getSuggestions(inputValue)
+                        .map((suggestion, index) =>
+                          renderSuggestion({
+                            suggestion,
+                            index,
+                            itemProps: getItemProps({
+                              item: suggestion.get("clientName")
+                            }),
+                            highlightedIndex,
+                            selectedItem
+                          })
+                        )}
                     </Paper>
                   ) : null}
                 </div>
@@ -253,7 +216,7 @@ const AddClient = ({ classes, ...props }) => {
           >
             <FormControlLabel
               value="http"
-              control={<Radio  />}
+              control={<Radio disabled = {props.httpExist} />}
               label="HTTP"
               classes={{
                 root: classes.labelRoot,
@@ -262,7 +225,7 @@ const AddClient = ({ classes, ...props }) => {
             />
             <FormControlLabel
               value="mqtt"
-              control={<Radio />}
+              control={<Radio disabled = {props.mqttExist}/>}
               label="MQTT"
               classes={{
                 root: classes.labelRoot,
@@ -271,7 +234,7 @@ const AddClient = ({ classes, ...props }) => {
             />
             <FormControlLabel
               value="coap"
-              control={<Radio />}
+              control={<Radio disabled = {props.coapExist}/>}
               label="COAP"
               classes={{
                 root: classes.labelRoot,
@@ -310,21 +273,21 @@ const AddClient = ({ classes, ...props }) => {
           >
             Add Topic
           </Button> */}
-          <div>
-            <Button
-              variant="contained"
-              size="small"
-              disabled={props.currentTopic.length==0}
-              onClick={props.addTopic}
-              style={{
-                height: "31px",
-                marginLeft: "15px",
-                paddingRight: "15px"
-              }}
-            >
-              <AddIcon className={classes.iconSmall} />
-              Add
-            </Button>
+            <div>
+              <Button
+                variant="contained"
+                size="small"
+                disabled={props.currentTopic.length == 0}
+                onClick={props.addTopic}
+                style={{
+                  height: "31px",
+                  marginLeft: "15px",
+                  paddingRight: "15px"
+                }}
+              >
+                <AddIcon className={classes.iconSmall} />
+                Add
+              </Button>
             </div>
           </div>
           <div className={classes.demo}>
@@ -343,11 +306,14 @@ const AddClient = ({ classes, ...props }) => {
                     <ListItemText primary={value} />
 
                     <IconButton edge="end" aria-label="Delete">
-                      <DeleteIcon color="error" onClick={()=>{
-                        let topics = props.topics
-                        topics.splice(index, 1)
-                        props.setTopics(topics)
-                      }} />
+                      <DeleteIcon
+                        color="error"
+                        onClick={() => {
+                          let topics = props.topics;
+                          topics.splice(index, 1);
+                          props.setTopics(topics);
+                        }}
+                      />
                     </IconButton>
                   </ListItem>
                 );
@@ -355,38 +321,6 @@ const AddClient = ({ classes, ...props }) => {
             </List>
           </div>
         </FormControl>
-
-        {/* <MuiPickersUtilsProvider
-          utils={DateFnsUtils}
-          className={classes.textRow}
-        >
-          <Grid container className={classes.grid} justify="space-around">
-            <KeyboardDatePicker
-              className={classes.textRow}
-              margin="normal"
-              style={{ width: "49%" }}
-              id="mui-pickers-date"
-              label="Start after"
-              value={props.startAfter}
-              onChange={value => props.setStartAfter(value)}
-              KeyboardButtonProps={{
-                "aria-label": "change date"
-              }}
-            />
-            <KeyboardDatePicker
-              className={classes.textRow}
-              margin="normal"
-              style={{ width: "49%" }}
-              id="mui-pickers-date"
-              label="Expires before"
-              value={props.expiredBefore}
-              onChange={value => props.setExpiredBefore(value)}
-              KeyboardButtonProps={{
-                "aria-label": "change date"
-              }}
-            />
-          </Grid>
-        </MuiPickersUtilsProvider> */}
         {props.isLoading ? (
           <CircularProgress size={26} />
         ) : (
@@ -403,16 +337,18 @@ const AddClient = ({ classes, ...props }) => {
           </Button>
         )}
       </Paper>
+      </div>
     </Grid>
+    </Fragment>
   );
 };
 
 const styles = theme => ({
   container: {
-    width: "96vw",
+    width: "100vw",
     display: "flex",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
     //  backgroundColor: theme.palette.primary.main,
   },
   logotype: {
@@ -428,13 +364,15 @@ const styles = theme => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    marginTop: 90,
+    marginTop: 10,
     paddingTop: theme.spacing.unit * 5,
     paddingBottom: theme.spacing.unit * 6,
     paddingLeft: theme.spacing.unit * 6,
     paddingRight: theme.spacing.unit * 6,
-    width: 340,
-    maxWidth:"100vw"
+    maxWidth: 340,
+    width:"90%",
+    minWidth: 310,
+    display:"absolute"
   },
   textRow: {
     marginBottom: theme.spacing.unit * 3,
@@ -535,8 +473,8 @@ const styles = theme => ({
   divider: {
     height: theme.spacing(2)
   },
-  clientLabel:{
-    fontSize:"1.4rem"
+  clientLabel: {
+    fontSize: "1.4rem"
   }
 });
 
