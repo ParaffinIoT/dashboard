@@ -1,13 +1,5 @@
-import React, {Fragment} from "react";
-import { Link } from "react-router-dom";
-import clsx from "clsx";
+import React, { Fragment } from "react";
 import "date-fns";
-import DateFnsUtils from "@date-io/date-fns";
-import {
-  MuiPickersUtilsProvider,
-  KeyboardTimePicker,
-  KeyboardDatePicker
-} from "@material-ui/pickers";
 import Header from "../../components/Header/HeaderContainer";
 import {
   Grid,
@@ -16,20 +8,14 @@ import {
   withStyles,
   Button,
   TextField,
-  Select,
   FormControl,
-  InputLabel,
-  Input,
   MenuItem,
-  Chip,
-  Checkbox,
   CircularProgress,
   Fade,
   Radio,
   FormLabel,
   FormControlLabel,
   RadioGroup,
-  Icon,
   IconButton,
   List,
   ListItem,
@@ -41,7 +27,7 @@ import NotificationCustomComponent from "../../components/Notification";
 import classnames from "classnames";
 import Downshift from "downshift";
 import PropTypes from "prop-types";
-import deburr from "lodash/deburr";
+
 
 ////start/////
 
@@ -101,244 +87,231 @@ renderSuggestion.propTypes = {
 const AddClient = ({ classes, ...props }) => {
   return (
     <Fragment>
-         <Header />
-    <Grid container className={classes.container}>
+      <Header />
+      <Grid container className={classes.container}>
+        <div style={{ position: "relative", marginTop: "100px" }}>
+          <Fade in={!props.error}>
+            <Typography color="secondary" className={classes.errorMessage}>
+              {props.errorMsg}
+            </Typography>
+          </Fade>
+          {props.isSuccess && (
+            <NotificationCustomComponent
+              className={classes.notificationItem}
+              shadowless
+              type="customer"
+              message="New client added"
+              variant="contained"
+              color="success"
+            />
+          )}
+          <Paper classes={{ root: classes.paperRoot }}>
+            <Typography
+              variant="h4"
+              color="primary"
+              className={classnames(classes.textRow)}
+            >
+              Add New Client
+            </Typography>
+            <Downshift
+              id="downshift-simple"
+              onChange={async value => {
+                await props.setClientName(value);
+                props.checkIfAdapterTypeExist();
+              }}
+            >
+              {({
+                getInputProps,
+                getItemProps,
+                getLabelProps,
+                getMenuProps,
+                highlightedIndex,
+                inputValue,
+                isOpen,
+                selectedItem
+              }) => {
+                const { onBlur, onFocus, ...inputProps } = getInputProps({
+                  placeholder: "Select or provide new client",
+                  onChange: async e => {
+                    await props.setClientName(e.target.value);
+                    props.checkIfAdapterTypeExist();
+                  },
+                  value: props.clientName,
+                  classes: {
+                    underline: classes.textFieldUnderline,
+                    input: classes.textField
+                  }
+                });
 
+                return (
+                  <div className={classes.autoCompleteContainer}>
+                    {renderInput({
+                      fullWidth: true,
+                      classes,
+                      label: "Client",
+                      InputLabelProps: getLabelProps({
+                        shrink: true,
+                        className: classes.clientLabel
+                      }),
+                      InputProps: { onBlur, onFocus },
+                      inputProps
+                    })}
+                    <div {...getMenuProps()}>
+                      {isOpen ? (
+                        <Paper className={classes.autoCompletePaper} square>
+                          {props
+                            .getSuggestions(inputValue)
+                            .map((suggestion, index) =>
+                              renderSuggestion({
+                                suggestion,
+                                index,
+                                itemProps: getItemProps({
+                                  item: suggestion.get("clientName")
+                                }),
+                                highlightedIndex,
+                                selectedItem
+                              })
+                            )}
+                        </Paper>
+                      ) : null}
+                    </div>
+                  </div>
+                );
+              }}
+            </Downshift>
+            <FormControl
+              component="fieldset"
+              className={classes.radioFormControl}
+              fullWidth
+            >
+              <FormLabel component="legend">Adapter</FormLabel>
 
-<div style={{position:"relative", marginTop:"100px"}}> 
-<Fade in={!props.error}>
-        <Typography color="secondary" className={classes.errorMessage}>
-      {props.errorMsg}
-        </Typography>
-      </Fade>
-{props.isSuccess && (
-        <NotificationCustomComponent
-          className={classes.notificationItem}
-          shadowless
-          type="customer"
-          message="New client added"
-          variant="contained"
-          color="success"
-        />
-      )}
-      <Paper classes={{ root: classes.paperRoot }}>
-        <Typography
-          variant="h4"
-          color="primary"
-          className={classnames(classes.textRow)}
-        >
-          Add New Client
-        </Typography>
-        <Downshift
-          id="downshift-simple"
-          onChange={ async value => {
-          await  props.setClientName(value);
-            props.checkIfAdapterTypeExist()
+              <RadioGroup
+                aria-label="Gender"
+                name="adapter"
+                className={classes.group}
+                value={props.adpter}
+                onChange={props.addAdapter}
+                row
+              >
+                <FormControlLabel
+                  value="http"
+                  control={<Radio disabled={props.httpExist} />}
+                  label="HTTP"
+                  classes={{
+                    root: classes.labelRoot,
+                    label: classes.labelLabel
+                  }}
+                />
+                <FormControlLabel
+                  value="mqtt"
+                  control={<Radio disabled={props.mqttExist} />}
+                  label="MQTT"
+                  classes={{
+                    root: classes.labelRoot,
+                    label: classes.labelLabel
+                  }}
+                />
+                <FormControlLabel
+                  value="coap"
+                  control={<Radio disabled={props.coapExist} />}
+                  label="COAP"
+                  classes={{
+                    root: classes.labelRoot,
+                    label: classes.labelLabel
+                  }}
+                />
+              </RadioGroup>
+            </FormControl>
+            <FormControl
+              component="fieldset"
+              fullWidth
+              className={classes.radioFormControl}
+            >
+              <FormLabel component="legend">Topics</FormLabel>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <TextField
+                  placeholder="Topic, eg garden/lamp"
+                  className={classnames(classes.textRow)}
+                  value={props.currentTopic}
+                  onChange={e => props.setCurrentTopic(e.target.value)}
+                  InputProps={{
+                    classes: {
+                      underline: classes.textFieldUnderline,
+                      input: classes.textField
+                    }
+                  }}
+                  fullWidth
+                />
 
-           
-          }}
-        >
-          {({
-            getInputProps,
-            getItemProps,
-            getLabelProps,
-            getMenuProps,
-            highlightedIndex,
-            inputValue,
-            isOpen,
-            selectedItem
-          }) => {
-            const { onBlur, onFocus, ...inputProps } = getInputProps({
-              placeholder: "Select or provide new client",
-              onChange: async e => {
-              await  props.setClientName(e.target.value);
-                props.checkIfAdapterTypeExist()
-              
-   
-              },
-              value: props.clientName,
-              classes: {
-                underline: classes.textFieldUnderline,
-                input: classes.textField
-              }
-            });
-
-            return (
-              <div className={classes.autoCompleteContainer}>
-                {renderInput({
-                  fullWidth: true,
-                  classes,
-                  label: "Client",
-                  InputLabelProps: getLabelProps({
-                    shrink: true,
-                    className: classes.clientLabel
-                  }),
-                  InputProps: { onBlur, onFocus },
-                  inputProps
-                })}
-                <div {...getMenuProps()}>
-                  {isOpen ? (
-                    <Paper className={classes.autoCompletePaper} square>
-                      {props
-                        .getSuggestions(inputValue)
-                        .map((suggestion, index) =>
-                          renderSuggestion({
-                            suggestion,
-                            index,
-                            itemProps: getItemProps({
-                              item: suggestion.get("clientName")
-                            }),
-                            highlightedIndex,
-                            selectedItem
-                          })
-                        )}
-                    </Paper>
-                  ) : null}
+                <div>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    disabled={props.currentTopic.length == 0}
+                    onClick={props.addTopic}
+                    style={{
+                      height: "31px",
+                      marginLeft: "15px",
+                      paddingRight: "15px"
+                    }}
+                  >
+                    <AddIcon className={classes.iconSmall} />
+                    Add
+                  </Button>
                 </div>
               </div>
-            );
-          }}
-        </Downshift>
-        <FormControl
-          component="fieldset"
-          className={classes.radioFormControl}
-          fullWidth
-        >
-          <FormLabel component="legend">Adapter</FormLabel>
+              <div className={classes.demo}>
+                <List
+                  dense={true}
+                  disablePadding={true}
+                  classes={{ dense: classes.dense }}
+                >
+                  {props.topics.map((value, index) => {
+                    return (
+                      <ListItem
+                        dense={true}
+                        classes={{ dense: classes.dense }}
+                        key={index}
+                      >
+                        <ListItemText primary={value} />
 
-          <RadioGroup
-            aria-label="Gender"
-            name="adapter"
-            className={classes.group}
-            value={props.adpter}
-            onChange={props.addAdapter}
-            row
-          >
-            <FormControlLabel
-              value="http"
-              control={<Radio disabled = {props.httpExist} />}
-              label="HTTP"
-              classes={{
-                root: classes.labelRoot,
-                label: classes.labelLabel
-              }}
-            />
-            <FormControlLabel
-              value="mqtt"
-              control={<Radio disabled = {props.mqttExist}/>}
-              label="MQTT"
-              classes={{
-                root: classes.labelRoot,
-                label: classes.labelLabel
-              }}
-            />
-            <FormControlLabel
-              value="coap"
-              control={<Radio disabled = {props.coapExist}/>}
-              label="COAP"
-              classes={{
-                root: classes.labelRoot,
-                label: classes.labelLabel
-              }}
-            />
-          </RadioGroup>
-        </FormControl>
-        <FormControl
-          component="fieldset"
-          fullWidth
-          className={classes.radioFormControl}
-        >
-          <FormLabel component="legend">Topics</FormLabel>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <TextField
-              placeholder="Topic, eg garden/lamp"
-              className={classnames(classes.textRow)}
-              value={props.currentTopic}
-              onChange={e => props.setCurrentTopic(e.target.value)}
-              InputProps={{
-                classes: {
-                  underline: classes.textFieldUnderline,
-                  input: classes.textField
-                }
-              }}
-              fullWidth
-            />
-
-            {/* <Button
-            style={{ marginRight: "auto", marginLeft: "auto" }}
-            color="primary"
-            size="small"
-            className={classes.backButton}
-            onClick={props.handleAddClientButtonClick}
-          >
-            Add Topic
-          </Button> */}
-            <div>
+                        <IconButton edge="end" aria-label="Delete">
+                          <DeleteIcon
+                            color="error"
+                            onClick={() => {
+                              let topics = props.topics;
+                              topics.splice(index, 1);
+                              props.setTopics(topics);
+                            }}
+                          />
+                        </IconButton>
+                      </ListItem>
+                    );
+                  })}
+                </List>
+              </div>
+            </FormControl>
+            {props.isLoading ? (
+              <CircularProgress size={26} />
+            ) : (
               <Button
+                style={{ marginTop: "25px" }}
                 variant="contained"
+                color="primary"
                 size="small"
-                disabled={props.currentTopic.length == 0}
-                onClick={props.addTopic}
-                style={{
-                  height: "31px",
-                  marginLeft: "15px",
-                  paddingRight: "15px"
-                }}
+                className={classes.backButton}
+                onClick={props.handleAddClientButtonClick}
+                disabled={
+                  !props.clientName || props.topics.length ==0 || !props.adapter
+                }
               >
-                <AddIcon className={classes.iconSmall} />
-                Add
+                Add Client
               </Button>
-            </div>
-          </div>
-          <div className={classes.demo}>
-            <List
-              dense={true}
-              disablePadding={true}
-              classes={{ dense: classes.dense }}
-            >
-              {props.topics.map((value, index) => {
-                return (
-                  <ListItem
-                    dense={true}
-                    classes={{ dense: classes.dense }}
-                    key={index}
-                  >
-                    <ListItemText primary={value} />
-
-                    <IconButton edge="end" aria-label="Delete">
-                      <DeleteIcon
-                        color="error"
-                        onClick={() => {
-                          let topics = props.topics;
-                          topics.splice(index, 1);
-                          props.setTopics(topics);
-                        }}
-                      />
-                    </IconButton>
-                  </ListItem>
-                );
-              })}
-            </List>
-          </div>
-        </FormControl>
-        {props.isLoading ? (
-          <CircularProgress size={26} />
-        ) : (
-          <Button
-            style={{ marginTop: "25px" }}
-            variant="contained"
-            color="primary"
-            size="small"
-            className={classes.backButton}
-            onClick={props.handleAddClientButtonClick}
-            classes={{}}
-          >
-            Add Client
-          </Button>
-        )}
-      </Paper>
-      </div>
-    </Grid>
+            )}
+          </Paper>
+        </div>
+      </Grid>
     </Fragment>
   );
 };
@@ -348,7 +321,7 @@ const styles = theme => ({
     width: "100vw",
     display: "flex",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
     //  backgroundColor: theme.palette.primary.main,
   },
   logotype: {
@@ -370,9 +343,9 @@ const styles = theme => ({
     paddingLeft: theme.spacing.unit * 6,
     paddingRight: theme.spacing.unit * 6,
     maxWidth: 340,
-    width:"90%",
+    width: "90%",
     minWidth: 310,
-    display:"absolute"
+    display: "absolute"
   },
   textRow: {
     marginBottom: theme.spacing.unit * 3,

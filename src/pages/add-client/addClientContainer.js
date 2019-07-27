@@ -1,6 +1,5 @@
 import { withHandlers, withState, lifecycle, compose } from "recompose";
 import AddClientView from "./addClientView";
-import AutoComplete from "./autocomplete";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import {
@@ -11,42 +10,6 @@ import {
 } from "./addClientState";
 import deburr from "lodash/deburr";
 const Parse = window.Parse;
-const suggestions = [
-  { label: "Afghanistan" },
-  { label: "Aland Islands" },
-  { label: "Albania" },
-  { label: "Algeria" },
-  { label: "American Samoa" },
-  { label: "Andorra" },
-  { label: "Angola" },
-  { label: "Anguilla" },
-  { label: "Antarctica" },
-  { label: "Antigua and Barbuda" },
-  { label: "Argentina" },
-  { label: "Armenia" },
-  { label: "Aruba" },
-  { label: "Australia" },
-  { label: "Austria" },
-  { label: "Azerbaijan" },
-  { label: "Bahamas" },
-  { label: "Bahrain" },
-  { label: "Bangladesh" },
-  { label: "Barbados" },
-  { label: "Belarus" },
-  { label: "Belgium" },
-  { label: "Belize" },
-  { label: "Benin" },
-  { label: "Bermuda" },
-  { label: "Bhutan" },
-  { label: "Bolivia, Plurinational State of" },
-  { label: "Bonaire, Sint Eustatius and Saba" },
-  { label: "Bosnia and Herzegovina" },
-  { label: "Botswana" },
-  { label: "Bouvet Island" },
-  { label: "Brazil" },
-  { label: "British Indian Ocean Territory" },
-  { label: "Brunei Darussalam" }
-];
 export default compose(
   connect(
     state => ({
@@ -110,7 +73,10 @@ export default compose(
       }
     },
     addTopic: props => () => {
-      props.setTopics([...props.topics, `${Parse.User.current().get("username")}/${props.currentTopic}`]);
+      props.setTopics([
+        ...props.topics,
+        `${Parse.User.current().get("username")}/${props.currentTopic}`
+      ]);
       props.setCurrentTopic("");
     },
 
@@ -141,12 +107,12 @@ export default compose(
       }
 
       if (!props.isLoading && !props.error) {
-    //   await  props.setAdapter(null);
-    //   await  props.setClientName("");
-    //  await   props.setHttpExist(false);
-    //   await  props.setMqttExist(false);
-    //   await  props.setCoapExist(false);
-    //   props.getUserClients()
+        //   await  props.setAdapter(null);
+        //   await  props.setClientName("");
+        //  await   props.setHttpExist(false);
+        //   await  props.setMqttExist(false);
+        //   await  props.setCoapExist(false);
+        //   props.getUserClients()
       }
     },
     getSuggestions: props => (value, { showEmpty = false } = {}) => {
