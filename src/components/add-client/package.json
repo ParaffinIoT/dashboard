@@ -1,0 +1,7 @@
+{
+    "name": "add-client",
+    "version": "0.0.0",
+    "main": "addClientContainer.js",
+    "private": true
+  }
+  

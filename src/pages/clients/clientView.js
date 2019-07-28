@@ -1,71 +1,131 @@
 import React from "react";
-import {
-  Grid,
-  LinearProgress,
-  Select,
-  OutlinedInput,
-  MenuItem,
-  withStyles,
-  CssBaseline,
-  Button
-} from "@material-ui/core";
+import { Grid, withStyles, CssBaseline, Button, Icon, Modal } from "@material-ui/core";
 import Widget from "../../components/Widget";
 import PageTitle from "../../components/PageTitle";
-import { Typography } from "../../components/Wrappers";
 import { Link } from "react-router-dom";
 import Header from "../../components/Header";
+import { red, blue } from "@material-ui/core/colors";
+import AddClient from "../../components/add-client";
 
+function rand() {
+  return Math.round(Math.random() * 20) - 10;
+}
+
+function getModalStyle() {
+  const top = 50 + rand();
+  const left = 50 + rand();
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
 
 const Dashboard = ({ classes, theme, client, history, ...props }) => {
+  const [open, setOpen] = React.useState(false);
+  const [modalStyle] = React.useState(getModalStyle);
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
   return (
     <React.Fragment>
       <CssBaseline />
       <Header />
-      <div className={classes.content} />
 
-      <PageTitle title="Clients" button="Add New Clients" onBtnClick={ ()=> history.push("/add-client") } />
-      <Grid container spacing={4}>
-        {client.user_clients.map((value, index) => {
-          return (
-            <Grid item lg={3} md={4} sm={6} xs={12} key={index}>
-              <Widget
-                title={value.clientName}
-                upperTitle
-                className={classes.card}
-                bodyClass={classes.fullHeightBody}
+      <div style={{ marginTop: "90px", marginLeft: "2%", marginRight: "2%" }}>
+        <PageTitle
+          title="Clients"
+          button="Add New Clients"
+          onBtnClick={() => history.push("/add-client")}
+        />
+      </div>
+      <div className={classes.content}>
+        <Grid container spacing={4}>
+          <Grid item lg={3} md={4} sm={6} xs={12}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "column",
+                height: "100%",
+                width: "100%"
+              }}
+            >
+              <Icon
+                className={classes.iconHover}
+                color="disabled"
+                style={{ fontSize: 90 }}
+                onClick={handleOpen}
               >
-                <div className={classes.btnContainer}>
-                  <small className={classes.version}>Version: {value.ver}</small>
+                add_circle
+              </Icon>
+              <span>Add New Client</span>
+            </div>
+          </Grid>
+          {client.user_clients.map((value, index) => {
+            return (
+              <Grid item lg={3} md={4} sm={6} xs={12} key={index}>
+                <Widget
+                  title={value.id && value.get("clientName")}
+                  upperTitle
+                  className={classes.card}
+                  bodyClass={classes.fullHeightBody}
+                >
+                  <div className={classes.btnContainer}>
+                    <small className={classes.version}>
+                      Version: {value.id && value.get("ver")}
+                    </small>
 
-                  <Button
-                    component={Link}
-                    to={`clients/dashboard/${value.clientId}`}
-                    color="primary"
-                    size="large"
-                    className={classes.forgetButton}
-                    onClick = {()=>props.handleSetClient(value.clientId)}
-                  >
-                    Select
-                  </Button>
-                </div>
-              </Widget>
-            </Grid>
-          );
-        })}
-      </Grid>
+                    <Button
+                      component={Link}
+                      to={`clients/dashboard/${value.id}`}
+                      color="primary"
+                      size="large"
+                      className={classes.forgetButton}
+                      onClick={() => props.handleSetClient(value.id)}
+                    >
+                      Select
+                    </Button>
+                  </div>
+                </Widget>
+              </Grid>
+            );
+          })}
+        </Grid>
+      </div>
+      <Modal
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+        open={open}
+        onClose={handleClose}
+        style={{alignItems:'center',justifyContent:'center', display:"flex"}}
+      >
+        <div className={classes.paper}>
+          <AddClient />
+        </div>
+      </Modal>
+
     </React.Fragment>
   );
 };
 
 const styles = theme => ({
   content: {
-    padding: theme.spacing.unit * 3
+    padding: theme.spacing.unit * 3,
+    width: "90%",
+    marginLeft: "5%"
   },
   card: {
     minHeight: "100%",
     display: "flex",
     flexDirection: "column",
-    justifyContent: "space-between",
+    justifyContent: "space-between"
   },
   fullHeightBody: {
     height: "23vh"
@@ -83,6 +143,28 @@ const styles = theme => ({
   },
   version: {
     paddingBottom: "15px"
+  },
+  icon: {
+    margin: theme.spacing(2)
+  },
+  iconHover: {
+    margin: theme.spacing(2),
+    "&:hover": {
+      color: blue[800]
+    }
+  },
+
+  paper: {
+    width:"90vw",
+    maxWidth:"500px",
+    backgroundColor: theme.palette.background.paper,
+    boxShadow: theme.customShadows.widgetDark,
+    paddingBottom: theme.spacing.unit * 6,
+    paddingLeft: theme.spacing.unit * 6,
+    paddingRight: theme.spacing.unit * 6,
+    top: `25%`,
+    margin:"auto"
+    // transform: `translate(-10%, -10%)`,
   }
 });
 

@@ -1,7 +1,7 @@
 import { compose, withState, withHandlers, lifecycle } from "recompose";
 import {connect} from "react-redux"
 import ClientView from "./clientView";
-import {setClient, getUserClient} from "./ClientState"
+import {setClient, getUserClients} from "./ClientState"
 import {withRouter} from "react-router-dom"
 
 export default compose(
@@ -10,7 +10,7 @@ export default compose(
     state => ({
       client: state.client,
     }),
-    { setClient, getUserClient }
+    { setClient, getUserClients }
   ),
   withState("mainChartState", "setMainChartState", "monthly"),
   withHandlers({
@@ -19,8 +19,8 @@ export default compose(
     }
   }),
   lifecycle({
-    componentDidMount() {
-        this.props.getUserClient("");
+    componentWillMount() {
+        this.props.getUserClients();
       }
   })
 )(ClientView);
