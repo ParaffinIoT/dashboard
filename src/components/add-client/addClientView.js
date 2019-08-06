@@ -119,6 +119,7 @@ const AddClient = ({ classes, ...props }) => {
                 await props.setClientName(value);
                 props.checkIfAdapterTypeExist();
               }}
+              initialInputValue={props.adapterClientName}
             >
               {({
                 getInputProps,

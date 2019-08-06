@@ -119,6 +119,7 @@ const AddClient = ({ classes, ...props }) => {
                 await props.setClientName(value);
                 props.checkIfAdapterTypeExist();
               }}
+              initialSelectedItem={"hall sun"}
             >
               {({
                 getInputProps,

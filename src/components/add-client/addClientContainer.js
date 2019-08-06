@@ -5,9 +5,9 @@ import { connect } from "react-redux";
 import {
   addClient,
   updateClient,
-  resetError,
-  getUserClients
+  resetError
 } from "./addClientState";
+import {getUserClients} from "../../pages/clients/ClientState"
 import deburr from "lodash/deburr";
 const Parse = window.Parse;
 export default compose(
@@ -17,7 +17,7 @@ export default compose(
       error: state.addClient.error,
       errorMsg: state.addClient.errorMsg,
       isSuccess: state.addClient.isSuccess,
-      user_clients: state.addClient.user_clients
+      user_clients: state.client.user_clients
     }),
     { addClient, updateClient, resetError, getUserClients }
   ),
@@ -34,11 +34,11 @@ export default compose(
     addAdapter: props => event => {
       props.setAdapter(event.target.value);
     },
-    checkIfAdapterTypeExist: props => () => {
+    checkIfAdapterTypeExist: props => (name=props.clientName) => {
       let clientExist = props.user_clients.find(
         value =>
           value.get("clientName").toLowerCase() ===
-          props.clientName.toLowerCase()
+         name.toLowerCase()
       );
       if (clientExist) {
         let httpExist = clientExist
@@ -142,6 +142,10 @@ export default compose(
     componentDidMount() {
       this.props.resetError();
       this.props.getUserClients();
+      if(this.props.adapterClientName){
+        this.props.setClientName(this.props.adapterClientName)
+       this.props.checkIfAdapterTypeExist(this.props.adapterClientName);
+      }
     }
   })
 )(AddClientView);

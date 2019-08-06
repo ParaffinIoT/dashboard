@@ -35,6 +35,7 @@ export const loginUser = (name, password) => async dispatch => {
     try {
       await Parse.User.logIn(name, password);
       dispatch(loginSuccess());
+      window.location.reload()
     } catch (error) {
       dispatch(loginFailure(error.message));
     }
@@ -53,6 +54,7 @@ export const signUpUser = (name, email, password)=> async dispatch =>{
     try {
     await user.signUp();
     dispatch(loginSuccess());
+    window.location.reload()
     } catch (error) {
       dispatch(loginFailure(error.message));
     }

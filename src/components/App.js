@@ -11,7 +11,6 @@ import AddClient from "../pages/add-client"
 const theme = createMuiTheme({...themes.default, ...overrides});
 
 const Parse = window.Parse
-var currentUser = Parse.User.current();
 
 const PrivateRoute = ({ component, isAuthenticated, ...rest }) => {
   return (

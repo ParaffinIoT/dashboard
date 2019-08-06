@@ -1,4 +1,6 @@
 const Parse = window.Parse;
+const currentUser = Parse.User.current()
+const username = currentUser && currentUser.get("username")
 export const initialState = {
   client: null,
   user_clients: [],
@@ -22,13 +24,13 @@ export const gettingUserClientSuccessfull = user_clients => ({
 });
 
 export const getUserClients = (
-  username = Parse.User.current().get("username")
+  realm = username
 ) => async dispatch => {
   dispatch(startGettingUserClients());
   try {
-    let Clients = Parse.Object.extend("Clients");
+    let Clients = Parse.Object.extend(username);
     let query = new Parse.Query(Clients);
-    query.equalTo("realm", username);
+    query.equalTo("realm", realm);
     let user_clients = await query.find({});
     dispatch(gettingUserClientSuccessfull(user_clients));
   } catch (error) {

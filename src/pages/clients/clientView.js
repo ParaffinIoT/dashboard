@@ -1,12 +1,19 @@
 import React from "react";
-import { Grid, withStyles, CssBaseline, Button, Icon, Modal } from "@material-ui/core";
+import {
+  Grid,
+  withStyles,
+  CssBaseline,
+  Button,
+  Icon,
+  Modal
+} from "@material-ui/core";
 import Widget from "../../components/Widget";
 import PageTitle from "../../components/PageTitle";
 import { Link } from "react-router-dom";
 import Header from "../../components/Header";
 import { red, blue } from "@material-ui/core/colors";
 import AddClient from "../../components/add-client";
-
+import Chip from "@material-ui/core/Chip";
 function rand() {
   return Math.round(Math.random() * 20) - 10;
 }
@@ -18,12 +25,13 @@ function getModalStyle() {
   return {
     top: `${top}%`,
     left: `${left}%`,
-    transform: `translate(-${top}%, -${left}%)`,
+    transform: `translate(-${top}%, -${left}%)`
   };
 }
 
 const Dashboard = ({ classes, theme, client, history, ...props }) => {
   const [open, setOpen] = React.useState(false);
+  const [clientName, setClientName] = React.useState(null);
   const [modalStyle] = React.useState(getModalStyle);
   const handleOpen = () => {
     setOpen(true);
@@ -38,13 +46,10 @@ const Dashboard = ({ classes, theme, client, history, ...props }) => {
       <Header />
 
       <div style={{ marginTop: "90px", marginLeft: "2%", marginRight: "2%" }}>
-        <PageTitle
-          title="Clients"
-          button="Add New Clients"
-          onBtnClick={() => history.push("/add-client")}
-        />
+        <PageTitle title="Clients" />
       </div>
       <div className={classes.content}>
+        {client.user_clients.length>0 &&
         <Grid container spacing={4}>
           <Grid item lg={3} md={4} sm={6} xs={12}>
             <div
@@ -61,7 +66,10 @@ const Dashboard = ({ classes, theme, client, history, ...props }) => {
                 className={classes.iconHover}
                 color="disabled"
                 style={{ fontSize: 90 }}
-                onClick={handleOpen}
+                onClick={() => {
+                  handleOpen();
+                  setClientName("");
+                }}
               >
                 add_circle
               </Icon>
@@ -77,10 +85,39 @@ const Dashboard = ({ classes, theme, client, history, ...props }) => {
                   className={classes.card}
                   bodyClass={classes.fullHeightBody}
                 >
+                  <div
+                    style={{
+                      display: "flex",
+                      flexFlow: "row wrap",
+                      marginTop: "20px"
+                    }}
+                  >
+                    {value.id &&
+                      value
+                        .get("adapters")
+                        .map((val, i) => (
+                          <Chip
+                            size="small"
+                            label={val.type}
+                            className={classes.chip}
+                            color="secondary"
+                          />
+                        ))}
+                  </div>
+
                   <div className={classes.btnContainer}>
-                    <small className={classes.version}>
-                      Version: {value.id && value.get("ver")}
-                    </small>
+                    <Button
+                      variant="contained"
+                      color="default"
+                      size="small"
+                      className={classes.forgetButton}
+                      onClick={() => {
+                        handleOpen();
+                        setClientName(value.get("clientName"));
+                      }}
+                    >
+                      Add Adapter
+                    </Button>
 
                     <Button
                       component={Link}
@@ -98,19 +135,55 @@ const Dashboard = ({ classes, theme, client, history, ...props }) => {
             );
           })}
         </Grid>
+        }
+
+        {
+          client.user_clients.length===0 &&  
+          <div style={{display:"flex", alignItems:"center", justifyContent:"center", flexDirection:"column"}}>  
+          <h3>You haven't added any client yet</h3>       
+          <Grid item lg={3} md={4} sm={6} xs={12}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "column",
+              height: "100%",
+              width: "100%"
+            }}
+          >
+            <Icon
+              className={classes.iconHover}
+              color="disabled"
+              style={{ fontSize: 90 }}
+              onClick={() => {
+                handleOpen();
+                setClientName("");
+              }}
+            >
+              add_circle
+            </Icon>
+            <span>Add New Client</span>
+          </div>
+        </Grid>
+        </div>
+        }
       </div>
       <Modal
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
         open={open}
         onClose={handleClose}
-        style={{alignItems:'center',justifyContent:'center', display:"flex"}}
+        style={{
+          alignItems: "center",
+          justifyContent: "center",
+          display: "flex"
+        }}
       >
         <div className={classes.paper}>
-          <AddClient />
+          <AddClient adapterClientName={clientName} />
         </div>
       </Modal>
-
     </React.Fragment>
   );
 };
@@ -118,23 +191,23 @@ const Dashboard = ({ classes, theme, client, history, ...props }) => {
 const styles = theme => ({
   content: {
     padding: theme.spacing.unit * 3,
-    width: "90%",
-    marginLeft: "5%"
+    maxWidth: "90%",
+    marginLeft: "auto",
+    marginRight:"auto"
   },
   card: {
-    minHeight: "100%",
+    minHeight: "100%"
+  },
+  fullHeightBody: {
+    height: "23vh",
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between"
   },
-  fullHeightBody: {
-    height: "23vh"
-  },
   btnContainer: {
     display: "flex",
     alignItems: "flex-end",
-    justifyContent: "space-between",
-    height: "inherit"
+    justifyContent: "space-between"
   },
 
   forgetButton: {
@@ -155,16 +228,19 @@ const styles = theme => ({
   },
 
   paper: {
-    width:"90vw",
-    maxWidth:"500px",
+    width: "90vw",
+    maxWidth: "500px",
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.customShadows.widgetDark,
     paddingBottom: theme.spacing.unit * 6,
     paddingLeft: theme.spacing.unit * 6,
     paddingRight: theme.spacing.unit * 6,
     top: `25%`,
-    margin:"auto"
+    margin: "auto"
     // transform: `translate(-10%, -10%)`,
+  },
+  chip: {
+    margin: theme.spacing(1)
   }
 });
 

@@ -1,4 +1,6 @@
 const Parse = window.Parse;
+const currentUser = Parse.User.current()
+const username = currentUser && currentUser.get("username")
 export const initialState = {
   isLoading: true,
   error: null,
@@ -50,7 +52,7 @@ export const addClient = ({
   dispatch(startAddingClient());
 
   try {
-    const Clients = Parse.Object.extend("Clients");
+    const Clients = Parse.Object.extend(username);
     const clients = new Clients();
     // sample adapterList is ["http", "mqtt"]
     let topics = topicList.map(value => {
@@ -63,7 +65,7 @@ export const addClient = ({
 
     let adapters = [{
       type:adapter,
-      enabled:false,
+      enabled:true,
       topics:topics,
     }
     ]
@@ -90,7 +92,7 @@ export const updateClient = ({
   dispatch(startAddingClient());
 
   try {
-    const Clients = Parse.Object.extend("Clients");
+    const Clients = Parse.Object.extend(username);
     let query = new Parse.Query(Clients);
    let client = await query.get(clientId)
 
@@ -125,7 +127,7 @@ export const updateClient = ({
 export const getUserClients = () => async dispatch => {
   dispatch(startGettingUserClients());
   try {
-    let Clients = Parse.Object.extend("Clients");
+    let Clients = Parse.Object.extend(username);
     let query = new Parse.Query(Clients);
     query.equalTo("realm", Parse.User.current().get("username"));
     let user_clients = await query.find({});
