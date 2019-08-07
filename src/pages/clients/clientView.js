@@ -49,125 +49,134 @@ const Dashboard = ({ classes, theme, client, history, ...props }) => {
         <PageTitle title="Clients" />
       </div>
       <div className={classes.content}>
-        {client.user_clients.length>0 &&
-        <Grid container spacing={4}>
-          <Grid item lg={3} md={4} sm={6} xs={12}>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                flexDirection: "column",
-                height: "100%",
-                width: "100%"
-              }}
-            >
-              <Icon
-                className={classes.iconHover}
-                color="disabled"
-                style={{ fontSize: 90 }}
-                onClick={() => {
-                  handleOpen();
-                  setClientName("");
+        {client.user_clients.length > 0 && (
+          <Grid container spacing={4}>
+            <Grid item lg={3} md={4} sm={6} xs={12}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  flexDirection: "column",
+                  height: "100%",
+                  width: "100%"
                 }}
               >
-                add_circle
-              </Icon>
-              <span>Add New Client</span>
-            </div>
-          </Grid>
-          {client.user_clients.map((value, index) => {
-            return (
-              <Grid item lg={3} md={4} sm={6} xs={12} key={index}>
-                <Widget
-                  title={value.id && value.get("clientName")}
-                  upperTitle
-                  className={classes.card}
-                  bodyClass={classes.fullHeightBody}
+                <Icon
+                  className={classes.iconHover}
+                  color="disabled"
+                  style={{ fontSize: 90 }}
+                  onClick={() => {
+                    handleOpen();
+                    setClientName("");
+                  }}
                 >
-                  <div
-                    style={{
-                      display: "flex",
-                      flexFlow: "row wrap",
-                      marginTop: "20px"
-                    }}
+                  add_circle
+                </Icon>
+                <span>Add New Client</span>
+              </div>
+            </Grid>
+            {client.user_clients.map((value, index) => {
+              return (
+                <Grid item lg={3} md={4} sm={6} xs={12} key={index}>
+                  <Widget
+                    title={value.id && value.get("clientName")}
+                    upperTitle
+                    className={classes.card}
+                    bodyClass={classes.fullHeightBody}
                   >
-                    {value.id &&
-                      value
-                        .get("adapters")
-                        .map((val, i) => (
-                          <Chip
-                            size="small"
-                            label={val.type}
-                            className={classes.chip}
-                            color="secondary"
-                          />
-                        ))}
-                  </div>
-
-                  <div className={classes.btnContainer}>
-                    <Button
-                      variant="contained"
-                      color="default"
-                      size="small"
-                      className={classes.forgetButton}
-                      onClick={() => {
-                        handleOpen();
-                        setClientName(value.get("clientName"));
+                    <div
+                      style={{
+                        display: "flex",
+                        flexFlow: "row wrap",
+                        marginTop: "20px"
                       }}
                     >
-                      Add Adapter
-                    </Button>
+                      {value.id &&
+                        value
+                          .get("adapters")
+                          .map((val, i) => (
+                            <Chip
+                              size="small"
+                              label={val.type}
+                              className={classes.chip}
+                              color="secondary"
+                            />
+                          ))}
+                    </div>
 
-                    <Button
-                      component={Link}
-                      to={`clients/dashboard/${value.id}`}
-                      color="primary"
-                      size="large"
-                      className={classes.forgetButton}
-                      onClick={() => props.handleSetClient(value.id)}
-                    >
-                      Select
-                    </Button>
-                  </div>
-                </Widget>
-              </Grid>
-            );
-          })}
-        </Grid>
-        }
+                    <div className={classes.btnContainer}>
+                      <Button
+                        variant="contained"
+                        color="default"
+                        size="small"
+                        disabled={
+                          value.id && value.get("adapters").length === 3
+                        }
+                        className={classes.forgetButton}
+                        onClick={() => {
+                          handleOpen();
+                          setClientName(value.get("clientName"));
+                        }}
+                      >
+                        Add Adapter
+                      </Button>
 
-        {
-          client.user_clients.length===0 &&  
-          <div style={{display:"flex", alignItems:"center", justifyContent:"center", flexDirection:"column"}}>  
-          <h3>You haven't added any client yet</h3>       
-          <Grid item lg={3} md={4} sm={6} xs={12}>
+                      <Button
+                        component={Link}
+                        to={`clients/dashboard/${value.id}`}
+                        color="primary"
+                        size="large"
+                        className={classes.forgetButton}
+                        onClick={() => props.handleSetClient(value.id)}
+                      >
+                        Select
+                      </Button>
+                    </div>
+                  </Widget>
+                </Grid>
+              );
+            })}
+          </Grid>
+        )}
+
+        {client.user_clients.length === 0 && (
           <div
             style={{
               display: "flex",
-              justifyContent: "center",
               alignItems: "center",
-              flexDirection: "column",
-              height: "100%",
-              width: "100%"
+              justifyContent: "center",
+              flexDirection: "column"
             }}
           >
-            <Icon
-              className={classes.iconHover}
-              color="disabled"
-              style={{ fontSize: 90 }}
-              onClick={() => {
-                handleOpen();
-                setClientName("");
-              }}
-            >
-              add_circle
-            </Icon>
-            <span>Add New Client</span>
+            <h3>You haven't added any client yet</h3>
+            <Grid item lg={3} md={4} sm={6} xs={12}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  flexDirection: "column",
+                  height: "100%",
+                  width: "100%"
+                }}
+              >
+                <Icon
+                  className={classes.iconHover}
+                  color="disabled"
+                  style={{ fontSize: 90 }}
+                  onClick={() => {
+                    handleOpen();
+                    setClientName("");
+                  }}
+                >
+                  add_circle
+                </Icon>
+                <span>Add New Client</span>
+              </div>
+            </Grid>
           </div>
-        </Grid>
-        </div>
-        }
+        )}
       </div>
       <Modal
         aria-labelledby="simple-modal-title"
@@ -190,10 +199,11 @@ const Dashboard = ({ classes, theme, client, history, ...props }) => {
 
 const styles = theme => ({
   content: {
+    paddingTop: theme.spacing.unit * 1,
     padding: theme.spacing.unit * 3,
     maxWidth: "90%",
     marginLeft: "auto",
-    marginRight:"auto"
+    marginRight: "auto"
   },
   card: {
     minHeight: "100%"

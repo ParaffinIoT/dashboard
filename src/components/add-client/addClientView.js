@@ -111,7 +111,7 @@ const AddClient = ({ classes, ...props }) => {
               color="primary"
               className={classnames(classes.textRow)}
             >
-              Add New Client
+            {props.adapterClientName?"Add New Adapter": " Add New Client"}
             </Typography>
             <Downshift
               id="downshift-simple"
@@ -138,6 +138,7 @@ const AddClient = ({ classes, ...props }) => {
                     props.checkIfAdapterTypeExist();
                   },
                   value: props.clientName,
+                  disabled:props.adapterClientName?true:false,
                   classes: {
                     underline: classes.textFieldUnderline,
                     input: classes.textField
