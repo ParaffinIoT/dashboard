@@ -18,7 +18,7 @@ $ cd MyApp
 This will install both run-time project dependencies and developer tools listed
 in [package.json](package.json) file.
 
-#### 3. Run `npm start`
+#### 3. Run `npm run start:dev`
 
 Runs the app in the development mode.
 
@@ -33,5 +33,8 @@ It correctly bundles React in production mode and optimizes the build for the be
 
 The build is minified and the filenames include the hashes.
 Your app is ready to be deployed!
+
+#### 5. Run `npm start`
+Runs the app in the production mode.
 
 
