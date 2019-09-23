@@ -7,13 +7,13 @@ ENV NODE_ENV=${NODE_ENV}
 
 WORKDIR $ROOTPATH
 
+COPY . .
+
 COPY package.json package-lock.json ./
 
 RUN npm install
 
 RUN npm run build
-
-COPY . .
 
 CMD ["npm", "start"]
 
