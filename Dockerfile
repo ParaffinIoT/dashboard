@@ -7,13 +7,15 @@ ENV NODE_ENV=${NODE_ENV}
 
 WORKDIR $ROOTPATH
 
+EXPOSE 3030/tcp
+
+COPY . .
+
 COPY package.json package-lock.json ./
 
 RUN npm install
 
 RUN npm run build
-
-COPY . .
 
 CMD ["npm", "start"]
 
