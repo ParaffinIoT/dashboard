@@ -19,7 +19,7 @@ export default compose(
     }
   }),
   lifecycle({
-    componentWillMount() {
+    componentDidMount() {
         this.props.getUserClients();
       }
   })

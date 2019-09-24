@@ -1,9 +1,9 @@
-const Parse = window.Parse
+const Parse = window.Parse;
 export const initialState = {
   isLoading: false,
-  isAuthenticated:Parse.User.current(),
+  isAuthenticated: Parse.User.current(),
   error: null,
-  errorMsg:""
+  errorMsg: ""
 };
 
 export const START_LOGIN = "Login/START_LOGIN";
@@ -21,8 +21,9 @@ export const loginSuccess = () => ({
   type: LOGIN_SUCCESS
 });
 
-export const loginFailure = (errorMsg) => ({
-  type: LOGIN_FAILURE, payload :{errorMsg}
+export const loginFailure = errorMsg => ({
+  type: LOGIN_FAILURE,
+  payload: { errorMsg }
 });
 
 export const resetError = () => ({
@@ -34,9 +35,11 @@ export const loginUser = (name, password) => async dispatch => {
   if (name && password) {
     try {
       await Parse.User.logIn(name, password);
+
       dispatch(loginSuccess());
-      window.location.reload()
+      setTimeout(() => window.location.reload(), 2);
     } catch (error) {
+      alert(error.message);
       dispatch(loginFailure(error.message));
     }
   } else {
@@ -44,32 +47,33 @@ export const loginUser = (name, password) => async dispatch => {
   }
 };
 
-export const signUpUser = (name, email, password)=> async dispatch =>{
-  dispatch(startLogin())
-  if (name && email && password) { 
+export const signUpUser = (name, email, password) => async dispatch => {
+  dispatch(startLogin());
+  if (name && email && password) {
     var user = new Parse.User();
     user.set("username", name);
     user.set("password", password);
     user.set("email", email);
     try {
-    await user.signUp();
-    dispatch(loginSuccess());
-    window.location.reload()
+      await user.signUp();
+      dispatch(loginSuccess());
+      setTimeout(() => dispatch(loginSuccess()), 10);
     } catch (error) {
       dispatch(loginFailure(error.message));
     }
   } else {
     dispatch(loginFailure("Complete all required fields"));
   }
-}
+};
 
 export const signOutSuccess = () => ({
   type: SIGN_OUT_SUCCESS
 });
 
 export const signOut = () => async dispatch => {
- await Parse.User.logOut()
+  await Parse.User.logOut();
   dispatch(signOutSuccess());
+  setTimeout(() => window.location.reload(), 2);
 };
 
 export default function LoginReducer(state = initialState, { type, payload }) {
@@ -91,12 +95,12 @@ export default function LoginReducer(state = initialState, { type, payload }) {
         ...state,
         isLoading: false,
         error: true,
-       errorMsg: payload.errorMsg
+        errorMsg: payload.errorMsg
       };
     case RESET_ERROR:
       return {
         error: false,
-        errorMsg:""
+        errorMsg: ""
       };
     case SIGN_OUT_SUCCESS:
       return {

@@ -49,7 +49,7 @@ const Dashboard = ({ classes, theme, client, history, ...props }) => {
         <PageTitle title="Clients" />
       </div>
       <div className={classes.content}>
-        {client.user_clients.length > 0 && (
+        {client.user_clients && client.user_clients.length > 0 && (
           <Grid container spacing={4}>
             <Grid item lg={3} md={4} sm={6} xs={12}>
               <div
@@ -140,7 +140,7 @@ const Dashboard = ({ classes, theme, client, history, ...props }) => {
           </Grid>
         )}
 
-        {client.user_clients.length === 0 && (
+        {client.user_clients && client.user_clients.length === 0 && (
           <div
             style={{
               display: "flex",

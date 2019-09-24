@@ -3,7 +3,7 @@ const currentUser = Parse.User.current()
 const username = currentUser && currentUser.get("username")
 export const initialState = {
   client: null,
-  user_clients: [],
+  user_clients: null,
   isSuccess: false,
   isLoading: false
 };
@@ -28,12 +28,15 @@ export const getUserClients = (
 ) => async dispatch => {
   dispatch(startGettingUserClients());
   try {
-    let Clients = Parse.Object.extend(username);
+    let user = await Parse.User.currentAsync()
+   let usern = user.get("username")
+    let Clients = Parse.Object.extend(usern);
     let query = new Parse.Query(Clients);
     query.equalTo("realm", realm);
-    let user_clients = await query.find({});
+    let user_clients = await query.find();
     dispatch(gettingUserClientSuccessfull(user_clients));
   } catch (error) {
+    alert(error.message)
     // dispatch(addingClientFailure(error.message));
   }
 };

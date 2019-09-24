@@ -18,7 +18,7 @@ import google from "../../images/google.svg";
 const Login = ({ classes, ...props }) => (
   <Grid container className={classes.container}>
     <div className={classes.logotypeContainer}>
-      <img src={logo} alt="logo" className={classes.logotypeImage} />
+      <img src="https://raw.githubusercontent.com/ParaffinIoT/docs/master/images/paraffin_iot_platform.png" alt="logo" className={classes.logotypeImage} />
       <Typography className={classes.logotypeText}>ParaffinIoT</Typography>
     </div>
     <div className={classes.formContainer}>
