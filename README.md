@@ -5,11 +5,11 @@ Built with [React](https://facebook.github.io/react/), [Material-UI](https://mat
 
 #### 1. Get the latest version
 
-You can start by cloning the latest version of Paraffin Dashboard on your
+You can start by cloning the latest version of Paraffin Client Dashboard on your
 local machine by running:
 
 ```shell
-$ git clone https://github.com/flatlogic/react-material-admin.git MyApp
+$ git clone https://github.com/ParaffinIoT/dashboard.git Paraffin-client-dashboard
 $ cd MyApp
 ```
 
