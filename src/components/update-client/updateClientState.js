@@ -131,7 +131,6 @@ export const getUserClients = () => async dispatch => {
     let query = new Parse.Query(Clients);
     query.equalTo("realm", Parse.User.current().get("username"));
     let user_clients = await query.find({});
-    console.log("user_clients.toJson()")
     dispatch(gettingUserClientSuccessfull(user_clients));
   } catch (error) {
     dispatch(addingClientFailure(error.message));

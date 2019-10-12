@@ -34,6 +34,7 @@ export const getUserClients = (
     let query = new Parse.Query(Clients);
     query.equalTo("realm", realm);
     let user_clients = await query.find();
+    console.log(query.toJSON().where)
     dispatch(gettingUserClientSuccessfull(user_clients));
   } catch (error) {
     alert(error.message)

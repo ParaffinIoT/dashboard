@@ -1,0 +1,7 @@
+{
+    "name": "update-client",
+    "version": "0.0.0",
+    "main": "updateClientContainer.js",
+    "private": true
+  }
+  

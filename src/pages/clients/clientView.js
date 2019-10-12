@@ -13,7 +13,9 @@ import { Link } from "react-router-dom";
 import Header from "../../components/Header";
 import { red, blue } from "@material-ui/core/colors";
 import AddClient from "../../components/add-client";
+import UpdateClient from "../../components/update-client";
 import Chip from "@material-ui/core/Chip";
+import updateClientContainer from "../../components/update-client";
 function rand() {
   return Math.round(Math.random() * 20) - 10;
 }
@@ -30,15 +32,25 @@ function getModalStyle() {
 }
 
 const Dashboard = ({ classes, theme, client, history, ...props }) => {
-  const [open, setOpen] = React.useState(false);
+  const [openAddClient, setOpenAddClient] = React.useState(false);
+  const [openUpdateClient, setOpenUpdateClient] = React.useState(false);
   const [clientName, setClientName] = React.useState(null);
   const [modalStyle] = React.useState(getModalStyle);
-  const handleOpen = () => {
-    setOpen(true);
+  const openAddClientHandler = () => {
+    setOpenAddClient(true);
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const closeAddClient = () => {
+    setOpenAddClient(false);
+  };
+
+  const openUpdateClientHandler = adapterClientName => () => {
+    setOpenUpdateClient(true);
+    setClientName(adapterClientName);
+  };
+
+  const closeUpdateClient = () => {
+    setOpenUpdateClient(false);
   };
   return (
     <React.Fragment>
@@ -67,7 +79,7 @@ const Dashboard = ({ classes, theme, client, history, ...props }) => {
                   color="disabled"
                   style={{ fontSize: 90 }}
                   onClick={() => {
-                    handleOpen();
+                    openAddClientHandler();
                     setClientName("");
                   }}
                 >
@@ -81,6 +93,15 @@ const Dashboard = ({ classes, theme, client, history, ...props }) => {
                 <Grid item lg={3} md={4} sm={6} xs={12} key={index}>
                   <Widget
                     title={value.id && value.get("clientName")}
+                    menus={[
+                      {
+                        title: "Edit",
+                        onClick: openUpdateClientHandler(
+                          value.id ? value.get("clientName") : ""
+                        )
+                      },
+                      { title: "Delete", onClick: () => alert("hey delete") }
+                    ]}
                     upperTitle
                     className={classes.card}
                     bodyClass={classes.fullHeightBody}
@@ -115,7 +136,7 @@ const Dashboard = ({ classes, theme, client, history, ...props }) => {
                         }
                         className={classes.forgetButton}
                         onClick={() => {
-                          handleOpen();
+                          openAddClientHandler();
                           setClientName(value.get("clientName"));
                         }}
                       >
@@ -166,7 +187,7 @@ const Dashboard = ({ classes, theme, client, history, ...props }) => {
                   color="disabled"
                   style={{ fontSize: 90 }}
                   onClick={() => {
-                    handleOpen();
+                    openAddClientHandler();
                     setClientName("");
                   }}
                 >
@@ -181,8 +202,8 @@ const Dashboard = ({ classes, theme, client, history, ...props }) => {
       <Modal
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
-        open={open}
-        onClose={handleClose}
+        open={openAddClient}
+        onClose={closeAddClient}
         style={{
           alignItems: "center",
           justifyContent: "center",
@@ -191,6 +212,22 @@ const Dashboard = ({ classes, theme, client, history, ...props }) => {
       >
         <div className={classes.paper}>
           <AddClient adapterClientName={clientName} />
+        </div>
+      </Modal>
+
+      <Modal
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+        open={openUpdateClient}
+        onClose={closeUpdateClient}
+        style={{
+          alignItems: "center",
+          justifyContent: "center",
+          display: "flex"
+        }}
+      >
+        <div className={classes.paper}>
+          <UpdateClient adapterClientName={clientName} />
         </div>
       </Modal>
     </React.Fragment>

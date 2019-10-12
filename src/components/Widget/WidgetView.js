@@ -14,6 +14,7 @@ const Widget = ({
   classes,
   children,
   title,
+  menus,
   noBodyPadding,
   bodyClass,
   className,
@@ -61,18 +62,14 @@ const Widget = ({
       onClose={() => props.setMoreMenuOpen(false)}
       disableAutoFocusItem
     >
-      <MenuItem>
-        <Typography>Edit</Typography>
-      </MenuItem>
-      <MenuItem>
-        <Typography>Copy</Typography>
-      </MenuItem>
-      <MenuItem>
-        <Typography>Delete</Typography>
-      </MenuItem>
-      <MenuItem>
-        <Typography>Print</Typography>
-      </MenuItem>
+      {menus &&
+        menus.map((value, index) => {
+          return (
+            <MenuItem onClick={value.onClick} key={index}>
+              <Typography>{value.title}</Typography>
+            </MenuItem>
+          );
+        })}
     </Menu>
   </div>
 );
