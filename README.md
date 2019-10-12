@@ -10,7 +10,7 @@ local machine by running:
 
 ```shell
 $ git clone https://github.com/ParaffinIoT/dashboard.git Paraffin-client-dashboard
-$ cd MyApp
+$ cd Paraffin-client-dashboard
 ```
 
 #### 2. Run `npm install`
