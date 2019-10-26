@@ -1,6 +1,6 @@
 const Parse = window.Parse;
-const currentUser = Parse.User.current()
-const username = currentUser && currentUser.get("username")
+const currentUser = Parse.User.current();
+const username = currentUser && currentUser.get("username");
 export const initialState = {
   isLoading: true,
   error: null,
@@ -9,25 +9,25 @@ export const initialState = {
   user_clients: []
 };
 
-export const START_ADDING = "add-client/START_ADDING";
-export const ADDING_SUCCESS = "add-client/ADDING_SUCCESS";
-export const ADDING_FAILURE = "add-client/ADDING_FAILURE";
+export const START_UPDATING = "add-client/START_ADDING";
+export const UPDATING_SUCCESS = "add-client/ADDING_SUCCESS";
+export const UPDATING_FAILURE = "add-client/ADDING_FAILURE";
 export const RESET_ERROR = "add-client/RESET_ERROR";
 export const GETTING_USER_CLIENTS = "add-client/GETTING_USER_CLIENTS";
 export const GETTING_USER_CLIENTS_SUCCESSFULL =
   "add-client/GETTING_USER_CLIENTS_SUCCESSFULL";
 
-export const startAddingClient = () => ({
-  type: START_ADDING
+export const startUpdatingClient = () => ({
+  type: START_UPDATING
 });
 
-export const addingClientSuccess = isSuccess => ({
-  type: ADDING_SUCCESS,
+export const updatingClientSuccess = isSuccess => ({
+  type: UPDATING_SUCCESS,
   payload: { isSuccess }
 });
 
-export const addingClientFailure = errorMsg => ({
-  type: ADDING_FAILURE,
+export const updatingClientFailure = errorMsg => ({
+  type: UPDATING_FAILURE,
   payload: { errorMsg }
 });
 
@@ -44,83 +44,27 @@ export const resetError = () => ({
   type: RESET_ERROR
 });
 
-export const addClient = ({
-  clientName,
-  adapter,
-  topicList
-}) => async dispatch => {
-  dispatch(startAddingClient());
-
-  try {
-    const Clients = Parse.Object.extend(username);
-    const clients = new Clients();
-    // sample adapterList is ["http", "mqtt"]
-    let topics = topicList.map(value => {
-      return {
-        topic: value,
-        action:"allow",
-        type:"rw"
-      };
-    });
-
-    let adapters = [{
-      type:adapter,
-      enabled:true,
-      topics:topics,
-    }
-    ]
-
-    await clients.save({
-      clientName,
-      adapters,
-      ver: "1.0",
-      realm: Parse.User.current().get("username")
-    });
-    dispatch(addingClientSuccess(true));
-   // setTimeout(() => dispatch(addingClientSuccess(false)), 3000);
-   setTimeout(()=>window.location.reload(), 2000)
-  } catch (error) {
-    dispatch(addingClientFailure(error.message));
-  }
-};
-
 export const updateClient = ({
-  clientId,
-  adapter,
-  topicList
+  clientName,
+  adapters,
+  className,
+  clientId
 }) => async dispatch => {
-  dispatch(startAddingClient());
+  dispatch(startUpdatingClient());
 
   try {
-    const Clients = Parse.Object.extend(username);
+    const Clients = Parse.Object.extend(className);
     let query = new Parse.Query(Clients);
-   let client = await query.get(clientId)
-
-    let topics = topicList.map(value => {
-      return {
-        topic: value,
-        action:"allow",
-        type:"rw"
-      };
+    let client = await query.get(clientId);
+    await client.save({
+      clientName,
+      adapters
     });
-
-    let adapters = [...client.get("adapters"),{
-      type:adapter,
-      enabled:false,
-      topics:topics,
-    }
-    ]
-
-     client.set(
-      "adapters", adapters
-    );
-    client.save()
-    dispatch(addingClientSuccess(true));
-   // setTimeout(() => dispatch(addingClientSuccess(false)), 3000);
-   setTimeout(()=>window.location.reload(), 2000)
-
+    dispatch(updatingClientSuccess(true));
+    // setTimeout(() => dispatch(addingClientSuccess(false)), 3000);
+    setTimeout(() => window.location.reload(), 2000);
   } catch (error) {
-    dispatch(addingClientFailure(error.message));
+    dispatch(updatingClientFailure(error.message));
   }
 };
 
@@ -133,27 +77,27 @@ export const getUserClients = () => async dispatch => {
     let user_clients = await query.find({});
     dispatch(gettingUserClientSuccessfull(user_clients));
   } catch (error) {
-    dispatch(addingClientFailure(error.message));
+    dispatch(updatingClientFailure(error.message));
   }
 };
 
-export default function AddClientReducer(
+export default function UpdateClientReducer(
   state = initialState,
   { type, payload }
 ) {
   switch (type) {
-    case START_ADDING:
+    case START_UPDATING:
       return {
         ...state,
         isLoading: true
       };
-    case ADDING_SUCCESS:
+    case UPDATING_SUCCESS:
       return {
         ...state,
         isLoading: false,
         isSuccess: payload.isSuccess
       };
-    case ADDING_FAILURE:
+    case UPDATING_FAILURE:
       return {
         ...state,
         isLoading: false,

@@ -1,3 +1,5 @@
+import { async } from "q";
+
 const Parse = window.Parse;
 const currentUser = Parse.User.current()
 const username = currentUser && currentUser.get("username")
@@ -14,6 +16,15 @@ export const GETTING_USER_CLIENTS = "Client/GETTING_USER_CLIENTS";
 export const GETTING_USER_CLIENTS_SUCCESSFULL =
   "Client/GETTING_USER_CLIENTS_SUCCESSFULL";
 
+  export const GETTING_USER_CLIENTS_FAILURE =
+  "Client/GETTING_USER_CLIENTS_FAILURE";
+
+  export const DELETING_CLIENT_SUCCESSFULL =
+  "Client/DELETING_CLIENT_SUCCESSFULL";
+
+  export const DELETING_CLIENT_FAILURE =
+  "Client/DELETING_CLIENT_FAILURE";
+
 export const startGettingUserClients = () => ({
   type: GETTING_USER_CLIENTS
 });
@@ -21,6 +32,11 @@ export const startGettingUserClients = () => ({
 export const gettingUserClientSuccessfull = user_clients => ({
   type: GETTING_USER_CLIENTS_SUCCESSFULL,
   payload: { user_clients }
+});
+
+export const gettingUserClientFailure = message => ({
+  type: GETTING_USER_CLIENTS_FAILURE,
+  payload: { message }
 });
 
 export const getUserClients = (
@@ -34,15 +50,29 @@ export const getUserClients = (
     let query = new Parse.Query(Clients);
     query.equalTo("realm", realm);
     let user_clients = await query.find();
-    console.log(query.toJSON().where)
     dispatch(gettingUserClientSuccessfull(user_clients));
   } catch (error) {
-    alert(error.message)
-    // dispatch(addingClientFailure(error.message));
+    dispatch(gettingUserClientFailure(error.message));
   }
 };
 export const setClient = client => dispatch => {
   return dispatch({ type: SET_CLIENT, payload: { client } });
+};
+
+export const deleteClient = (className, clientId) => async dispatch => {
+  try {
+    const Clients = Parse.Object.extend(className);
+    let query = new Parse.Query(Clients);
+    let client = await query.get(clientId);
+    await client.destroy({})
+     dispatch({ type: DELETING_CLIENT_SUCCESSFULL, payload: null });
+    setTimeout(() => window.location.reload(), 500);
+
+  } catch (error) {
+    return dispatch({ type: DELETING_CLIENT_FAILURE, payload: {message:error.message} });
+
+  }
+
 };
 
 export default function ClientReducer(state = initialState, { type, payload }) {

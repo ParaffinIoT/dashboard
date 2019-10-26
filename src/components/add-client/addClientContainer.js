@@ -4,7 +4,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import {
   addClient,
-  updateClient,
+  addMoreAdapter,
   resetError
 } from "./addClientState";
 import {getUserClients} from "../../pages/clients/ClientState"
@@ -19,7 +19,7 @@ export default compose(
       isSuccess: state.addClient.isSuccess,
       user_clients: state.client.user_clients
     }),
-    { addClient, updateClient, resetError, getUserClients }
+    { addClient, addMoreAdapter, resetError, getUserClients }
   ),
   withState("adapter", "setAdapter", null),
   withState("topics", "setTopics", []),
@@ -99,7 +99,7 @@ export default compose(
           topicList: props.topics
         });
       } else {
-        props.updateClient({
+        props.addMoreAdapter({
           clientId: exist.id,
           adapter: props.adapter,
           topicList: props.topics

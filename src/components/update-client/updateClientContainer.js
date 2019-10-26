@@ -2,7 +2,7 @@ import { withHandlers, withState, lifecycle, compose } from "recompose";
 import AddClientView from "./updateClientView";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
-import { addClient, updateClient, resetError } from "./updateClientState";
+import { updateClient, resetError } from "./updateClientState";
 import { getUserClients } from "../../pages/clients/ClientState";
 import deburr from "lodash/deburr";
 const Parse = window.Parse;
@@ -15,7 +15,7 @@ export default compose(
       isSuccess: state.addClient.isSuccess,
       user_clients: state.client.user_clients
     }),
-    { addClient, updateClient, resetError, getUserClients }
+    { updateClient, resetError, getUserClients }
   ),
   withState("adapter", "setAdapter", null),
   withState("topics", "setTopics", []),
@@ -24,7 +24,7 @@ export default compose(
   withState("httpExist", "setHttpExist", false),
   withState("mqttExist", "setMqttExist", false),
   withState("coapExist", "setCoapExist", false),
-  withState("isNew", "setIsNew", true),
+  withState("selectedClient", "setSelectedClient", null),
   withRouter,
   withHandlers({
     addAdapter: props => event => {
@@ -70,29 +70,34 @@ export default compose(
     addTopic: props => () => {
       props.setTopics([
         ...props.topics,
-       {topic: `${Parse.User.current().get("username")}/${props.currentTopic}`}
+        {
+          topic: `${Parse.User.current().get("username")}/${props.currentTopic}`
+        }
       ]);
       props.setCurrentTopic("");
     },
 
     getAdapterTopics: props => event => {
-      let client = props.user_clients.find(value => {
-        return (
-          value.get("clientName").toLowerCase() ===
-          props.adapterClientName.toLowerCase()
-        );
-      });
-
       let topics =
-        client &&
-        client.get("adapters").find(value => value.type == event.target.value);
+        props.selectedClient &&
+        props.selectedClient
+          .get("adapters")
+          .find(value => value.type == event.target.value);
 
-        topics && props.setTopics(topics.topics);
-      console.log("topics is ", topics.topics);
+      topics && props.setTopics(topics.topics);
     },
 
     removeTopic: props => key => {
       props.topics.splice(key, 1);
+    },
+    getSelectedClient: props => adapterClientName => {
+      let client = props.user_clients.find(value => {
+        return (
+          value.get("clientName").toLowerCase() ===
+          adapterClientName.toLowerCase()
+        );
+      });
+      props.setSelectedClient(client);
     },
     handleAddClientButtonClick: props => async () => {
       let exist = props.user_clients.find(
@@ -101,19 +106,19 @@ export default compose(
           props.clientName.toLowerCase()
       );
 
-      if (!exist) {
-        props.addClient({
-          clientName: props.clientName,
-          adapter: props.adapter,
-          topicList: props.topics
-        });
-      } else {
-        props.updateClient({
-          clientId: exist.id,
-          adapter: props.adapter,
-          topicList: props.topics
-        });
-      }
+      // if (!exist) {
+      //   props.addClient({
+      //     clientName: props.clientName,
+      //     adapter: props.adapter,
+      //     topicList: props.topics
+      //   });
+      // } else {
+      props.updateClient({
+        clientId: exist.id,
+        adapter: props.adapter,
+        topicList: props.topics
+      });
+      // }
 
       if (!props.isLoading && !props.error) {
         //   await  props.setAdapter(null);
@@ -153,6 +158,7 @@ export default compose(
       this.props.getUserClients();
       if (this.props.adapterClientName) {
         this.props.setClientName(this.props.adapterClientName);
+        this.props.getSelectedClient(this.props.adapterClientName);
         this.props.checkIfAdapterTypeExist(this.props.adapterClientName);
       }
     }

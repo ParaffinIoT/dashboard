@@ -100,7 +100,7 @@ const Dashboard = ({ classes, theme, client, history, ...props }) => {
                           value.id ? value.get("clientName") : ""
                         )
                       },
-                      { title: "Delete", onClick: () => alert("hey delete") }
+                      { title: "Delete", onClick: () => props.deleteClient(value.className, value.id) }
                     ]}
                     upperTitle
                     className={classes.card}

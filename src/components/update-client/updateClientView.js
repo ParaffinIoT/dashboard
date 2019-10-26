@@ -19,11 +19,14 @@ import {
   IconButton,
   List,
   ListItem,
-  ListItemText
+  Popover
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
+import SaveIcon from "@material-ui/icons/Save";
 import NotificationCustomComponent from "../Notification/Notification";
+import EditableTextField from "../editableTextField/editableTextField";
 import classnames from "classnames";
 import Downshift from "downshift";
 import PropTypes from "prop-types";
@@ -83,7 +86,66 @@ renderSuggestion.propTypes = {
 
 ////end//////
 
-const UpdateClient = ({ classes, ...props }) => {
+const UpdateClient = ({ classes, selectedClient, ...props }) => {
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [clientName, setClientName] = React.useState(null);
+  const [adapters, setAdapters] = React.useState(null);
+  const [selectedAdapter, setSelectedAdapter] = React.useState(null);
+  const [adpterTopics, setAdapterTopics] = React.useState(null);
+  const [currentlyEditting, setCurrentlyEditting] = React.useState(null);
+
+  React.useEffect(() => {
+    setClientName(selectedClient ? selectedClient.get("clientName") : null);
+    setAdapters(selectedClient ? selectedClient.get("adapters") : null);
+  }, [selectedClient]);
+
+  const showConfirmDelete = event => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const closeConfirmDelete = () => {
+    setAnchorEl(null);
+  };
+
+  const deleteAdapter = () => {
+    let adapterDataIndex =
+      adapters && adapters.findIndex(value => value.type === selectedAdapter);
+    let cloneAdapters = [...adapters];
+    cloneAdapters.splice(adapterDataIndex, 1);
+    props.updateClient({
+      clientName,
+      adapters: cloneAdapters,
+      className: selectedClient.className,
+      clientId: selectedClient.id
+    });
+  };
+
+  const updateAdapter = () => {
+    if (selectedAdapter === null) {
+      props.updateClient({
+        clientName,
+        adapters,
+        className: selectedClient.className,
+        clientId: selectedClient.id
+      });
+    } else {
+      let cloneAdapters = [...adapters];
+      let adapterDataIndex = cloneAdapters.findIndex(
+        value => value.type === selectedAdapter
+      );
+      cloneAdapters[adapterDataIndex].topics = adpterTopics;
+      props.updateClient({
+        clientName,
+        adapters: cloneAdapters,
+        className: selectedClient.className,
+        clientId: selectedClient.id
+      });
+    }
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
+
   return (
     <Fragment>
       {/* <Header /> */}
@@ -99,7 +161,7 @@ const UpdateClient = ({ classes, ...props }) => {
               className={classes.notificationItem}
               shadowless
               type="customer"
-              message="New client added"
+              message="Client has been updated"
               variant="contained"
               color="success"
             />
@@ -134,11 +196,11 @@ const UpdateClient = ({ classes, ...props }) => {
                 const { onBlur, onFocus, ...inputProps } = getInputProps({
                   placeholder: "Select or provide new client",
                   onChange: async e => {
-                    await props.setClientName(e.target.value);
-                   // props.checkIfAdapterTypeExist();
+                    await setClientName(e.target.value);
+                    // props.checkIfAdapterTypeExist();
                   },
-                  value: props.clientName,
-                //  disabled: props.adapterClientName ? true : false,
+                  value: clientName,
+                  //  disabled: props.adapterClientName ? true : false,
                   classes: {
                     underline: classes.textFieldUnderline,
                     input: classes.textField
@@ -181,6 +243,7 @@ const UpdateClient = ({ classes, ...props }) => {
                 );
               }}
             </Downshift>
+
             <FormControl
               component="fieldset"
               className={classes.radioFormControl}
@@ -191,9 +254,16 @@ const UpdateClient = ({ classes, ...props }) => {
               <RadioGroup
                 aria-label="adapter"
                 name="adapter"
-                className={classes.group} 
+                className={classes.group}
                 value={props.adpter}
-                onChange={props.getAdapterTopics}
+                onChange={e => {
+                  setSelectedAdapter(e.target.value);
+                  let adapterData = adapters.find(
+                    value => value.type === e.target.value
+                  );
+                  let topics = adapterData && adapterData.topics;
+                  setAdapterTopics(topics);
+                }}
                 row
               >
                 {props.httpExist && (
@@ -258,7 +328,15 @@ const UpdateClient = ({ classes, ...props }) => {
                     variant="contained"
                     size="small"
                     disabled={props.currentTopic.length === 0}
-                    onClick={props.addTopic}
+                    onClick={() => {
+                      let cloned = [...adpterTopics];
+                      cloned.push({
+                        action: "allow",
+                        type: "rw",
+                        topic: props.currentTopic
+                      });
+                      setAdapterTopics(cloned);
+                    }}
                     style={{
                       height: "31px",
                       marginLeft: "15px",
@@ -276,49 +354,139 @@ const UpdateClient = ({ classes, ...props }) => {
                   disablePadding={true}
                   classes={{ dense: classes.dense }}
                 >
-                  {props.topics.map((value, index) => {
-                    return (
-                      <ListItem
-                        dense={true}
-                        classes={{ dense: classes.dense }}
-                        key={index}
-                      >
-                        <ListItemText primary={value.topic} />
-
-                        <IconButton edge="end" aria-label="Delete">
-                          <DeleteIcon
-                            color="error"
-                            onClick={() => {
-                              let topics = props.topics;
-                              topics.splice(index, 1);
-                              props.setTopics(topics);
+                  {adpterTopics &&
+                    adpterTopics.map((value, index) => {
+                      return (
+                        <ListItem
+                          dense={true}
+                          classes={{ dense: classes.dense }}
+                          key={index}
+                        >
+                          <EditableTextField
+                            defaultValue={value.topic}
+                            editMode={index === currentlyEditting}
+                            key={value.topic}
+                            onChange={topic => {
+                              let cloned = [...adpterTopics];
+                              cloned[index] = {
+                                action: value.action,
+                                type: value.type,
+                                topic
+                              };
+                              setAdapterTopics(cloned);
                             }}
                           />
-                        </IconButton>
-                      </ListItem>
-                    );
-                  })}
+
+                          {index === currentlyEditting ? (
+                            <IconButton edge="end" aria-label="Save">
+                              <SaveIcon
+                                color="primary"
+                                onClick={() => {
+                                  setCurrentlyEditting(null);
+                                  // let cloned = [...adpterTopics]
+                                  // cloned.splice(index, 1);
+                                  // setAdapterTopics(cloned);
+                                }}
+                              />
+                            </IconButton>
+                          ) : (
+                            <IconButton edge="end" aria-label="Edit">
+                              <EditIcon
+                                color="primary"
+                                onClick={() => {
+                                  setCurrentlyEditting(index);
+                                  // let cloned = [...adpterTopics]
+                                  // cloned.splice(index, 1);
+                                  // setAdapterTopics(cloned);
+                                }}
+                              />
+                            </IconButton>
+                          )}
+
+                          <IconButton edge="end" aria-label="Delete">
+                            <DeleteIcon
+                              color="secondary"
+                              onClick={() => {
+                                let cloned = [...adpterTopics];
+                                cloned.splice(index, 1);
+                                setAdapterTopics(cloned);
+                              }}
+                            />
+                          </IconButton>
+                        </ListItem>
+                      );
+                    })}
                 </List>
               </div>
             </FormControl>
+
             {props.isLoading ? (
               <CircularProgress size={26} />
             ) : (
               <Button
-                style={{ marginTop: "25px" }}
+                style={{ marginTop: "25px", marginRight: "10px" }}
                 variant="contained"
                 color="primary"
                 size="small"
                 className={classes.backButton}
-                onClick={props.handleAddClientButtonClick}
+                onClick={updateAdapter}
                 disabled={
                   !props.clientName ||
-                  props.topics.length === 0 
+                  (adpterTopics && adpterTopics.length === 0) || currentlyEditting !==null
                 }
               >
-               Update Adapter
+                Update Client
               </Button>
             )}
+            <Button
+              style={{ marginTop: "25px" }}
+              variant="outlined"
+              color="secondary"
+              size="small"
+              className={classes.backButton}
+              aria-describedby={id}
+              onClick={showConfirmDelete}
+              // onClick={props.handleAddClientButtonClick}
+              disabled={!props.clientName || selectedAdapter === null}
+            >
+              Delete Adapter
+            </Button>
+            <Popover
+              id={id}
+              open={open}
+              anchorEl={anchorEl}
+              onClose={closeConfirmDelete}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "left"
+              }}
+              transformOrigin={{
+                vertical: "bottom",
+                horizontal: "left"
+              }}
+            >
+              <div>
+                <div style={{ padding: "13px" }}>
+                  <Typography className={classes.typography}>
+                    Are you sure you want to delete this adapter?
+                  </Typography>
+                </div>
+                <div style={{ padding: "2px 8px 7px 0px", float: "right" }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    style={{ marginRight: "10px" }}
+                    onClick={deleteAdapter}
+                  >
+                    Yes
+                  </Button>
+                  <Button variant="outlined" color="secondary" size="small">
+                    No
+                  </Button>
+                </div>
+              </div>
+            </Popover>
           </div>
         </div>
       </Grid>
@@ -369,7 +537,7 @@ const styles = theme => ({
   backButton: {
     boxShadow: theme.customShadows.widget,
     textTransform: "none",
-    fontSize: "1rem"
+    fontSize: "0.9rem"
   },
   textFieldUnderline: {
     "&:before": {

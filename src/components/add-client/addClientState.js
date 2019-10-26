@@ -84,7 +84,7 @@ export const addClient = ({
   }
 };
 
-export const updateClient = ({
+export const addMoreAdapter = ({
   clientId,
   adapter,
   topicList
