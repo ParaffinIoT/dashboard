@@ -5,7 +5,9 @@ import {
   CssBaseline,
   Button,
   Icon,
-  Modal
+  Modal,
+  Fade,
+  IconButton
 } from "@material-ui/core";
 import Widget from "../../components/Widget";
 import PageTitle from "../../components/PageTitle";
@@ -15,6 +17,7 @@ import { red, blue } from "@material-ui/core/colors";
 import AddClient from "../../components/add-client";
 import UpdateClient from "../../components/update-client";
 import Chip from "@material-ui/core/Chip";
+import CloseIcon from "@material-ui/icons/Close";
 import updateClientContainer from "../../components/update-client";
 function rand() {
   return Math.round(Math.random() * 20) - 10;
@@ -100,7 +103,11 @@ const Dashboard = ({ classes, theme, client, history, ...props }) => {
                           value.id ? value.get("clientName") : ""
                         )
                       },
-                      { title: "Delete", onClick: () => props.deleteClient(value.className, value.id) }
+                      {
+                        title: "Delete",
+                        onClick: () =>
+                          props.deleteClient(value.className, value.id)
+                      }
                     ]}
                     upperTitle
                     className={classes.card}
@@ -210,9 +217,22 @@ const Dashboard = ({ classes, theme, client, history, ...props }) => {
           display: "flex"
         }}
       >
-        <div className={classes.paper}>
-          <AddClient adapterClientName={clientName} />
-        </div>
+        <Fade in={openAddClient}>
+          <div>
+            <div style={{ float: "right", marginRight: "10px" }}>
+              <IconButton
+                edge="end"
+                aria-label="Close"
+                onClick={closeAddClient}
+              >
+                <CloseIcon />
+              </IconButton>
+            </div>
+            <div className={classes.paper}>
+              <AddClient adapterClientName={clientName} />
+            </div>
+          </div>
+        </Fade>
       </Modal>
 
       <Modal
@@ -226,9 +246,22 @@ const Dashboard = ({ classes, theme, client, history, ...props }) => {
           display: "flex"
         }}
       >
-        <div className={classes.paper}>
-          <UpdateClient adapterClientName={clientName} />
-        </div>
+        <Fade in={openUpdateClient}>
+          <div>
+            <div style={{ float: "right", marginRight: "10px" }}>
+              <IconButton
+                edge="end"
+                aria-label="Close"
+                onClick={closeUpdateClient}
+              >
+                <CloseIcon />
+              </IconButton>
+            </div>
+            <div className={classes.paper}>
+              <UpdateClient adapterClientName={clientName} />
+            </div>
+          </div>
+        </Fade>
       </Modal>
     </React.Fragment>
   );

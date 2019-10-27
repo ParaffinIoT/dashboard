@@ -22,6 +22,7 @@ import {
   ListItemText
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
+import CloseIcon from "@material-ui/icons/Close"
 import DeleteIcon from "@material-ui/icons/Delete";
 import NotificationCustomComponent from "../../components/Notification";
 import classnames from "classnames";

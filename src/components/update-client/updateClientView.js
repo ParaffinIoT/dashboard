@@ -481,7 +481,7 @@ const UpdateClient = ({ classes, selectedClient, ...props }) => {
                   >
                     Yes
                   </Button>
-                  <Button variant="outlined" color="secondary" size="small">
+                  <Button variant="outlined" color="secondary" size="small" onClick={closeConfirmDelete}>
                     No
                   </Button>
                 </div>
