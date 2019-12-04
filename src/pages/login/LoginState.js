@@ -1,4 +1,10 @@
 const Parse = window.Parse;
+Parse.initialize(
+  process.env.REACT_APP_APP_ID,
+  process.env.REACT_APP_JAVASCRIPT_KEY,
+  process.env.REACT_APP_MASTERKEY
+);
+Parse.serverURL = process.env.REACT_APP_API_SERVER_URL;
 export const initialState = {
   isLoading: false,
   isAuthenticated: Parse.User.current(),
