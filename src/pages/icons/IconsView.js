@@ -13,7 +13,7 @@ import PageTitle from "../../components/PageTitle";
 
 // icons sets
 import "font-awesome/css/font-awesome.min.css";
-import "line-awesome/dist/css/line-awesome.css";
+// import "line-awesome/dist/css/line-awesome.css";
 
 const IconsPage = ({ classes, ...props }) => (
   <React.Fragment>
