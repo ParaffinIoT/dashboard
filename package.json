@@ -2,7 +2,7 @@
   "name": "paraffin-dashboard",
   "version": "1.0.0",
   "dependencies": {
-    "@date-io/date-fns": "^1.3.8",
+    "@date-io/date-fns": "^1.3.13",
     "@material-ui/core": "^4.1.3",
     "@material-ui/icons": "^3.0.2",
     "@material-ui/pickers": "^3.1.2",
