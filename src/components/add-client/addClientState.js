@@ -1,12 +1,12 @@
+import { openAddClient, gettingUserClientSuccessfull } from "../../pages/clients/ClientState";
 const Parse = window.Parse;
-const currentUser = Parse.User.current()
-const username = currentUser && currentUser.get("username")
+const currentUser = Parse.User.current();
+const username = currentUser && currentUser.get("username");
 export const initialState = {
   isLoading: true,
   error: null,
   errorMsg: "",
-  isSuccess: false,
-  user_clients: []
+  isSuccess: false
 };
 
 export const START_ADDING = "add-client/START_ADDING";
@@ -31,108 +31,30 @@ export const addingClientFailure = errorMsg => ({
   payload: { errorMsg }
 });
 
-export const startGettingUserClients = () => ({
-  type: GETTING_USER_CLIENTS
-});
-
-export const gettingUserClientSuccessfull = user_clients => ({
-  type: GETTING_USER_CLIENTS_SUCCESSFULL,
-  payload: { user_clients }
-});
-
 export const resetError = () => ({
   type: RESET_ERROR
 });
 
-export const addClient = ({
-  clientName,
-  adapter,
-  topicList
-}) => async dispatch => {
+export const addClient = ({ clientName, version }) => async (dispatch, getState) => {
   dispatch(startAddingClient());
 
   try {
     const Clients = Parse.Object.extend(username);
     const clients = new Clients();
-    // sample adapterList is ["http", "mqtt"]
-    let topics = topicList.map(value => {
-      return {
-        topic: value,
-        action:"allow",
-        type:"rw"
-      };
-    });
+    let adapters = [];
 
-    let adapters = [{
-      type:adapter,
-      enabled:true,
-      topics:topics,
-    }
-    ]
-
-    await clients.save({
+    let new_client = await clients.save({
       clientName,
       adapters,
-      ver: "1.0",
+      ver: version,
       realm: Parse.User.current().get("username")
     });
+    const {user_clients} = getState().client
+    const new_user_clients = user_clients.map(value=>value)
+    new_user_clients.push(new_client.toJSON())
     dispatch(addingClientSuccess(true));
-   // setTimeout(() => dispatch(addingClientSuccess(false)), 3000);
-   setTimeout(()=>window.location.reload(), 2000)
-  } catch (error) {
-    dispatch(addingClientFailure(error.message));
-  }
-};
-
-export const addMoreAdapter = ({
-  clientId,
-  adapter,
-  topicList
-}) => async dispatch => {
-  dispatch(startAddingClient());
-
-  try {
-    const Clients = Parse.Object.extend(username);
-    let query = new Parse.Query(Clients);
-   let client = await query.get(clientId)
-
-    let topics = topicList.map(value => {
-      return {
-        topic: value,
-        action:"allow",
-        type:"rw"
-      };
-    });
-
-    let adapters = [...client.get("adapters"),{
-      type:adapter,
-      enabled:false,
-      topics:topics,
-    }
-    ]
-
-     client.set(
-      "adapters", adapters
-    );
-    client.save()
-    dispatch(addingClientSuccess(true));
-   // setTimeout(() => dispatch(addingClientSuccess(false)), 3000);
-   setTimeout(()=>window.location.reload(), 2000)
-
-  } catch (error) {
-    dispatch(addingClientFailure(error.message));
-  }
-};
-
-export const getUserClients = () => async dispatch => {
-  dispatch(startGettingUserClients());
-  try {
-    let Clients = Parse.Object.extend(username);
-    let query = new Parse.Query(Clients);
-    query.equalTo("realm", Parse.User.current().get("username"));
-    let user_clients = await query.find({});
-    console.log("user_clients.toJson()")
-    dispatch(gettingUserClientSuccessfull(user_clients));
+    dispatch(openAddClient(false));
+    dispatch(gettingUserClientSuccessfull(new_user_clients))
   } catch (error) {
     dispatch(addingClientFailure(error.message));
   }
@@ -165,10 +87,6 @@ export default function AddClientReducer(
       return {
         error: false,
         errorMsg: ""
-      };
-    case GETTING_USER_CLIENTS_SUCCESSFULL:
-      return {
-        user_clients: payload.user_clients
       };
     default:
       return state;

@@ -1,0 +1,7 @@
+{
+    "name": "add-adapters",
+    "version": "0.0.0",
+    "main": "addAdaptersContainer.js",
+    "private": true
+  }
+  

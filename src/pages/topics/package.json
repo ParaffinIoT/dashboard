@@ -1,6 +1,6 @@
 {
-  "name": "Maps",
+  "name": "topics",
   "version": "0.0.0",
-  "main": "Maps.js",
+  "main": "topics.js",
   "private": true
 }

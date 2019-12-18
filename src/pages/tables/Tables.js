@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid, Card } from '@material-ui/core';
 import MUIDataTable from "mui-datatables";
 
 import PageTitle from '../../components/PageTitle';
@@ -29,9 +29,8 @@ const datatableData = [
 
 const Tables = props => (
   <React.Fragment>
-    <PageTitle title="Tables" />
     <Grid container spacing={32}>
-      <Grid item xs={12}>
+      {/* <Grid item xs={12}>
         <MUIDataTable
           title="Employee List"
           data={datatableData}
@@ -40,11 +39,14 @@ const Tables = props => (
             filterType: 'checkbox',
           }}
         />
-      </Grid>
+      </Grid> */}
       <Grid item xs={12}>
-        <Widget title="Material-UI Table" upperTitle noBodyPadding>
+        {/* <Widget title="Material-UI Table" upperTitle noBodyPadding> */}
+        <Card >
+          <div style={{padding:"25px 15px"}}>
           <Table data={mock.table} />
-        </Widget>
+          </div>
+        </Card>
       </Grid>
     </Grid>
   </React.Fragment>

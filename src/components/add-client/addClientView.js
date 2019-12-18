@@ -3,87 +3,15 @@ import "date-fns";
 import Header from "../../components/Header/HeaderContainer";
 import {
   Grid,
-  Paper,
   Typography,
   withStyles,
   Button,
   TextField,
-  FormControl,
-  MenuItem,
   CircularProgress,
-  Fade,
-  Radio,
-  FormLabel,
-  FormControlLabel,
-  RadioGroup,
-  IconButton,
-  List,
-  ListItem,
-  ListItemText
+  Fade
 } from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
-import CloseIcon from "@material-ui/icons/Close"
-import DeleteIcon from "@material-ui/icons/Delete";
 import NotificationCustomComponent from "../../components/Notification";
 import classnames from "classnames";
-import Downshift from "downshift";
-import PropTypes from "prop-types";
-
-
-////start/////
-
-function renderInput(inputProps) {
-  const { InputProps, classes, ref, onChange, ...other } = inputProps;
-
-  return (
-    <TextField
-      InputProps={{
-        inputRef: ref,
-        classes: {
-          root: classes.inputRoot,
-          input: classes.inputInput
-        },
-        ...InputProps
-      }}
-      {...other}
-    />
-  );
-}
-
-function renderSuggestion(suggestionProps) {
-  const {
-    suggestion,
-    index,
-    itemProps,
-    highlightedIndex,
-    selectedItem
-  } = suggestionProps;
-  const isHighlighted = highlightedIndex === index;
-  const isSelected =
-    (selectedItem || "").indexOf(suggestion.get("clientName")) > -1;
-  return (
-    <MenuItem
-      {...itemProps}
-      key={suggestion.get("clientName")}
-      selected={isHighlighted}
-      component="div"
-      style={{
-        fontWeight: isSelected ? 500 : 400
-      }}
-    >
-      {suggestion.get("clientName")}
-    </MenuItem>
-  );
-}
-renderSuggestion.propTypes = {
-  highlightedIndex: PropTypes.number,
-  index: PropTypes.number,
-  itemProps: PropTypes.object,
-  selectedItem: PropTypes.string,
-  suggestion: PropTypes.shape({ label: PropTypes.string }).isRequired
-};
-
-////end//////
 
 const AddClient = ({ classes, ...props }) => {
   return (
@@ -112,188 +40,36 @@ const AddClient = ({ classes, ...props }) => {
               color="primary"
               className={classnames(classes.textRow)}
             >
-            {props.adapterClientName?"Add New Adapter": " Add New Client"}
+              {props.adapterClientName ? "Add New Adapter" : " Add New Client"}
             </Typography>
-            <Downshift
-              id="downshift-simple"
-              onChange={async value => {
-                await props.setClientName(value);
-                props.checkIfAdapterTypeExist();
-              }}
-              initialInputValue={props.adapterClientName}
-            >
-              {({
-                getInputProps,
-                getItemProps,
-                getLabelProps,
-                getMenuProps,
-                highlightedIndex,
-                inputValue,
-                isOpen,
-                selectedItem
-              }) => {
-                const { onBlur, onFocus, ...inputProps } = getInputProps({
-                  placeholder: "Select or provide new client",
-                  onChange: async e => {
-                    await props.setClientName(e.target.value);
-                    props.checkIfAdapterTypeExist();
-                  },
-                  value: props.clientName,
-                  disabled:props.adapterClientName?true:false,
-                  classes: {
-                    underline: classes.textFieldUnderline,
-                    input: classes.textField
-                  }
-                });
-
-                return (
-                  <div className={classes.autoCompleteContainer}>
-                    {renderInput({
-                      fullWidth: true,
-                      classes,
-                      label: "Client",
-                      InputLabelProps: getLabelProps({
-                        shrink: true,
-                        className: classes.clientLabel
-                      }),
-                      InputProps: { onBlur, onFocus },
-                      inputProps
-                    })}
-                    <div {...getMenuProps()}>
-                      {isOpen ? (
-                        <Paper className={classes.autoCompletePaper} square>
-                          {props
-                            .getSuggestions(inputValue)
-                            .map((suggestion, index) =>
-                              renderSuggestion({
-                                suggestion,
-                                index,
-                                itemProps: getItemProps({
-                                  item: suggestion.get("clientName")
-                                }),
-                                highlightedIndex,
-                                selectedItem
-                              })
-                            )}
-                        </Paper>
-                      ) : null}
-                    </div>
-                  </div>
-                );
-              }}
-            </Downshift>
-            <FormControl
-              component="fieldset"
-              className={classes.radioFormControl}
-              fullWidth
-            >
-              <FormLabel component="legend">Adapter</FormLabel>
-
-              <RadioGroup
-                aria-label="Gender"
-                name="adapter"
-                className={classes.group}
-                value={props.adpter}
-                onChange={props.addAdapter}
-                row
-              >
-                <FormControlLabel
-                  value="http"
-                  control={<Radio disabled={props.httpExist} />}
-                  label="HTTP"
-                  classes={{
-                    root: classes.labelRoot,
-                    label: classes.labelLabel
-                  }}
-                />
-                <FormControlLabel
-                  value="mqtt"
-                  control={<Radio disabled={props.mqttExist} />}
-                  label="MQTT"
-                  classes={{
-                    root: classes.labelRoot,
-                    label: classes.labelLabel
-                  }}
-                />
-                <FormControlLabel
-                  value="coap"
-                  control={<Radio disabled={props.coapExist} />}
-                  label="COAP"
-                  classes={{
-                    root: classes.labelRoot,
-                    label: classes.labelLabel
-                  }}
-                />
-              </RadioGroup>
-            </FormControl>
-            <FormControl
-              component="fieldset"
-              fullWidth
-              className={classes.radioFormControl}
-            >
-              <FormLabel component="legend">Topics</FormLabel>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <TextField
-                  placeholder="Topic, eg garden/lamp"
-                  className={classnames(classes.textRow)}
-                  value={props.currentTopic}
-                  onChange={e => props.setCurrentTopic(e.target.value)}
-                  InputProps={{
-                    classes: {
-                      underline: classes.textFieldUnderline,
-                      input: classes.textField
-                    }
-                  }}
-                  fullWidth
-                />
-                <div>
-                  <Button
-                    variant="contained"
-                    size="small"
-                    disabled={props.currentTopic.length === 0}
-                    onClick={props.addTopic}
-                    style={{
-                      height: "31px",
-                      marginLeft: "15px",
-                      paddingRight: "15px"
-                    }}
-                  >
-                    <AddIcon className={classes.iconSmall} />
-                    Add
-                  </Button>
-                </div>
-              </div>
-              <div className={classes.demo}>
-                <List
-                  dense={true}
-                  disablePadding={true}
-                  classes={{ dense: classes.dense }}
-                >
-                  {props.topics.map((value, index) => {
-                    return (
-                      <ListItem
-                        dense={true}
-                        classes={{ dense: classes.dense }}
-                        key={index}
-                      >
-                        <ListItemText primary={value} />
-
-                        <IconButton edge="end" aria-label="Delete">
-                          <DeleteIcon
-                            color="error"
-                            onClick={() => {
-                              let topics = props.topics;
-                              topics.splice(index, 1);
-                              props.setTopics(topics);
-                            }}
-                          />
-                        </IconButton>
-                      </ListItem>
-                    );
-                  })}
-                </List>
-              </div>
-            </FormControl>
+            <div style={{ width: "400px" }}>
+              <TextField
+                required
+                id="standard-required"
+                label="Required"
+                placeholder="Client Name"
+                value={props.clientName}
+                onChange={(e)=>props.setClientName(e.target.value)
+                }
+                fullWidth
+                InputLabelProps={{
+                  shrink: true
+                }}
+              />
+              <TextField
+                className={classnames(classes.textField)}
+                required
+                id="standard-required"
+                label="Required"
+                placeholder="Version"
+                value={props.version}
+                onChange={(e)=>props.setVersion(e.target.value)}
+                fullWidth
+                InputLabelProps={{
+                  shrink: true
+                }}
+              />
+            </div>
             {props.isLoading ? (
               <CircularProgress size={26} />
             ) : (
@@ -304,9 +80,7 @@ const AddClient = ({ classes, ...props }) => {
                 size="small"
                 className={classes.backButton}
                 onClick={props.handleAddClientButtonClick}
-                disabled={
-                  !props.clientName || props.topics.length ===0 || !props.adapter
-                }
+                disabled={!props.clientName || !props.version}
               >
                 Add Client
               </Button>
@@ -319,68 +93,18 @@ const AddClient = ({ classes, ...props }) => {
 };
 
 const styles = theme => ({
-  container: {
-    // width: "100vw",
-    // display: "flex",
-    // justifyContent: "center",
-    // alignItems: "center"
-    //  backgroundColor: theme.palette.primary.main,
-  },
-  logotype: {
-    display: "flex",
-    alignItems: "center",
-    marginBottom: theme.spacing.unit * 12,
-    [theme.breakpoints.down("sm")]: {
-      display: "none"
-    }
-  },
-  paperRoot: {
-    boxShadow: theme.customShadows.widgetDark,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    marginTop: 10,
-    paddingTop: theme.spacing.unit * 5,
-    paddingBottom: theme.spacing.unit * 6,
-    paddingLeft: theme.spacing.unit * 6,
-    paddingRight: theme.spacing.unit * 6,
-    // maxWidth: 340,
-    // width: "90%",
-    // minWidth: 310,
-    // display: "absolute"
-  },
   textRow: {
     marginBottom: theme.spacing.unit * 3,
     textAlign: "center"
   },
 
-  safetyText: {
-    fontWeight: 300,
-    color: theme.palette.text.hint
-  },
   backButton: {
     boxShadow: theme.customShadows.widget,
     textTransform: "none",
     fontSize: "1rem"
   },
-  textFieldUnderline: {
-    "&:before": {
-      borderBottomColor: theme.palette.primary.light
-    },
-    "&:after": {
-      borderBottomColor: theme.palette.primary.main
-    },
-    "&:hover:before": {
-      borderBottomColor: `${theme.palette.primary.light} !important`
-    }
-  },
   textField: {
     borderBottomColor: theme.palette.background.light
-  },
-  formControl: {
-    margin: theme.spacing.unit * 3,
-    minWidth: 120,
-    maxWidth: 300
   },
   grid: {
     display: "flex",
@@ -400,56 +124,8 @@ const styles = theme => ({
     marginBottom: theme.spacing.unit * 3,
     width: "100%"
   },
-  radioFormControl: {
-    marginTop: theme.spacing(3)
-  },
-  group: {
-    width: 360
-  },
-  labelRoot: {
-    fontSize: "0.9rem"
-  },
-  labelLabel: {
-    fontSize: "0.9rem"
-  },
-  iconSmall: {
-    fontSize: 20,
-    marginRight: theme.spacing(1)
-  },
-  dense: {
-    marginTop: "-25px"
-  },
-  buttonText: {
-    fontSize: "0.5rem"
-  },
-
-  autoCompleteContainer: {
-    flexGrow: 1,
-    position: "relative",
-    width: "100%"
-  },
-  autoCompletePaper: {
-    position: "absolute",
-    zIndex: 1,
-    marginTop: theme.spacing(1),
-    left: 0,
-    right: 0
-  },
-  autoCompleteChip: {
-    margin: theme.spacing(0.5, 0.25)
-  },
-  inputRoot: {
-    flexWrap: "wrap"
-  },
-  inputInput: {
-    width: "100%",
-    flexGrow: 1
-  },
-  divider: {
-    height: theme.spacing(2)
-  },
-  clientLabel: {
-    fontSize: "1.4rem"
+  textField: {
+    marginTop: theme.spacing.unit * 3
   }
 });
 

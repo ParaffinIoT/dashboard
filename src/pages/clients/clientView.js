@@ -81,10 +81,7 @@ const Dashboard = ({ classes, theme, client, history, ...props }) => {
                   className={classes.iconHover}
                   color="disabled"
                   style={{ fontSize: 90 }}
-                  onClick={() => {
-                    openAddClientHandler();
-                    setClientName("");
-                  }}
+                  onClick={() => props.openAddClient(true)}
                 >
                   add_circle
                 </Icon>
@@ -95,13 +92,11 @@ const Dashboard = ({ classes, theme, client, history, ...props }) => {
               return (
                 <Grid item lg={3} md={4} sm={6} xs={12} key={index}>
                   <Widget
-                    title={value.id && value.get("clientName")}
+                    title={value.clientName}
                     menus={[
                       {
                         title: "Edit",
-                        onClick: openUpdateClientHandler(
-                          value.id ? value.get("clientName") : ""
-                        )
+                        onClick: openUpdateClientHandler(value.clientName)
                       },
                       {
                         title: "Delete",
@@ -113,50 +108,54 @@ const Dashboard = ({ classes, theme, client, history, ...props }) => {
                     className={classes.card}
                     bodyClass={classes.fullHeightBody}
                   >
-                    <div
-                      style={{
-                        display: "flex",
-                        flexFlow: "row wrap",
-                        marginTop: "20px"
-                      }}
-                    >
-                      {value.id &&
-                        value
-                          .get("adapters")
-                          .map((val, i) => (
-                            <Chip
-                              size="small"
-                              label={val.type}
-                              className={classes.chip}
-                              color="secondary"
-                            />
-                          ))}
-                    </div>
-
-                    <div className={classes.btnContainer}>
-                      <Button
-                        variant="contained"
-                        color="default"
-                        size="small"
-                        disabled={
-                          value.id && value.get("adapters").length === 3
-                        }
-                        className={classes.forgetButton}
-                        onClick={() => {
-                          openAddClientHandler();
-                          setClientName(value.get("clientName"));
+                    {value.adapters.length > 0 ? (
+                      <div
+                        style={{
+                          display: "flex",
+                          flexFlow: "row wrap",
+                          marginTop: "20px"
                         }}
                       >
-                        Add Adapter
-                      </Button>
+                        {value.adapters.map((val, i) => (
+                          <Chip
+                            size="small"
+                            label={val.type}
+                            className={classes.chip}
+                            color="secondary"
+                          />
+                        ))}
+                      </div>
+                    ) : (
+                      <div style={{ margin: "auto" }}>
+                        <p style={{textAlign:"center"}}>No adapter for this client</p>
+                        <Chip
+                          variant="outlined"
+                          size="small"
+                          label="Clickable"
+                          label="Add Now"
+                          style={{marginLeft:"20%"}}
+                          color="primary"
+                          onClick={() => ""}
+                        />
+                      </div>
+                    )}
 
+                    <div className={classes.btnContainer}>
+                      <Chip
+                        variant="outlined"
+                        size="small"
+                        label={value.ver}
+                        color="secondary"
+                      />
                       <Button
-                        component={Link}
-                        to={`clients/dashboard/${value.id}`}
+                        // component={Link}
+                        // to={`clients/dashboard/${value.id}`}
                         color="primary"
-                        size="large"
+                        size="small"
                         className={classes.forgetButton}
-                        onClick={() => props.handleSetClient(value.id)}
+                        onClick={() =>
+                          props.handleSetClient(value, history)
+                        }
                       >
                         Select
                       </Button>
@@ -193,10 +192,7 @@ const Dashboard = ({ classes, theme, client, history, ...props }) => {
                   className={classes.iconHover}
                   color="disabled"
                   style={{ fontSize: 90 }}
-                  onClick={() => {
-                    openAddClientHandler();
-                    setClientName("");
-                  }}
+                  onClick={() => props.openAddClient(true)}
                 >
                   add_circle
                 </Icon>
@@ -209,56 +205,27 @@ const Dashboard = ({ classes, theme, client, history, ...props }) => {
       <Modal
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
-        open={openAddClient}
-        onClose={closeAddClient}
+        open={props.isOpen}
+        onClose={()=>props.openAddClient(false)}
         style={{
           alignItems: "center",
           justifyContent: "center",
           display: "flex"
         }}
       >
-        <Fade in={openAddClient}>
+        <Fade in={props.isOpen}>
           <div>
             <div style={{ float: "right", marginRight: "10px" }}>
               <IconButton
                 edge="end"
                 aria-label="Close"
-                onClick={closeAddClient}
+                onClick={()=>props.openAddClient(false)}
               >
                 <CloseIcon />
               </IconButton>
             </div>
             <div className={classes.paper}>
               <AddClient adapterClientName={clientName} />
-            </div>
-          </div>
-        </Fade>
-      </Modal>
-
-      <Modal
-        aria-labelledby="simple-modal-title"
-        aria-describedby="simple-modal-description"
-        open={openUpdateClient}
-        onClose={closeUpdateClient}
-        style={{
-          alignItems: "center",
-          justifyContent: "center",
-          display: "flex"
-        }}
-      >
-        <Fade in={openUpdateClient}>
-          <div>
-            <div style={{ float: "right", marginRight: "10px" }}>
-              <IconButton
-                edge="end"
-                aria-label="Close"
-                onClick={closeUpdateClient}
-              >
-                <CloseIcon />
-              </IconButton>
-            </div>
-            <div className={classes.paper}>
-              <UpdateClient adapterClientName={clientName} />
             </div>
           </div>
         </Fade>

@@ -27,14 +27,14 @@ const TableComponent = ({ data }) => {
         </TableRow>
       </TableHead>
       <TableBody>
-        {data.map(({ id, name, email, product, price, date, city, status }) => (
+        {data.map(({ id, name, action, type, adapter, edit, Delete, status }) => (
           <TableRow key={id}>
             <TableCell className="pl-3 fw-normal">{name}</TableCell>
-            <TableCell>{email}</TableCell>
-            <TableCell>{product}</TableCell>
-            <TableCell>{price}</TableCell>
-            <TableCell>{date}</TableCell>
-            <TableCell>{city}</TableCell>
+            <TableCell>{action}</TableCell>
+            <TableCell>{type}</TableCell>
+            <TableCell>{adapter}</TableCell>
+            <TableCell>{edit}</TableCell>
+            <TableCell>{Delete}</TableCell>
             <TableCell>
               <Button
                 color={states[status.toLowerCase()]}

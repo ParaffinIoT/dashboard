@@ -8,12 +8,10 @@ import Sidebar from '../Sidebar';
 
 // pages
 import Dashboard from '../../pages/dashboard';
-import Typography from '../../pages/typography';
+import Topics from '../../pages/topics';
 import Notifications from '../../pages/notifications';
-import Maps from '../../pages/maps';
 import Tables from '../../pages/tables';
-import Icons from '../../pages/icons';
-import Charts from '../../pages/charts';
+import Adapters from '../../pages/adapters';
 
 const Layout = ({ classes, isSidebarOpened, toggleSidebar, client }) => (
   <div className={classes.root}>
@@ -26,13 +24,12 @@ const Layout = ({ classes, isSidebarOpened, toggleSidebar, client }) => (
           <div className={classes.fakeToolbar} />
           <Switch>
             <Route path="/clients/dashboard/:id" component={Dashboard} />
-            <Route path="/clients/typography/:id" component={Typography} />
-            <Route path="/clients/tables/:id" component={Tables} />
-            <Route path="/clients/notifications/:id" component={Notifications} />
-            <Route exact path="/clients/ui/:id" render={() => <Redirect to={`/clients/ui/icons/${client}`} />} />
-            <Route path="/clients/ui/maps/:id" component={Maps} />
-            <Route path="/clients/ui/icons/:id" component={Icons} />
-            <Route path="/clients/ui/charts:id" component={Charts} />
+            <Route path="/clients/topics/:id" component={Topics} />
+            {/* <Route path="/clients/tables/:id" component={Tables} /> */}
+            {/* <Route path="/clients/notifications/:id" component={Notifications} /> */}
+            {/* <Route exact path="/clients/ui/:id" render={() => <Redirect to={`/clients/ui/icons/${client}`} />} /> */}
+            <Route path="/clients/adapters/:id" component={Adapters} />
+            {/* <Route path="/clients/ui/charts:id" component={Charts} /> */}
           </Switch>
         </div>
       </React.Fragment>
