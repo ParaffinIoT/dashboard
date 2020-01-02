@@ -109,7 +109,7 @@ const Widget = ({
                     <div>
                       <div style={{ padding: "13px" }}>
                         <Typography className={classes.typography}>
-                          Are you sure you want to delete this client?
+                          Are you sure you want to delete {title}?
                         </Typography>
                       </div>
                       <div

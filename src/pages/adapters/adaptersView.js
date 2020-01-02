@@ -12,7 +12,7 @@ import PageTitle from "../../components/PageTitle/PageTitle";
 import Widget from "../../components/Widget/WidgetContainer";
 import CloseIcon from "@material-ui/icons/Close";
 import AddAdapter from "../../components/add-adapters";
-import moment from "moment"
+import moment from "moment";
 
 const AdaptersPage = ({ classes, ...props }) => {
   return (
@@ -20,21 +20,37 @@ const AdaptersPage = ({ classes, ...props }) => {
       <PageTitle
         title="Adapters"
         button="Add Adapter"
-        onBtnClick={()=>props.openAddAdapter(true)}
+        onBtnClick={() => props.openAddAdapter(true)}
       />
       <Grid container spacing={4}>
         {props.client.adapters &&
           props.client.adapters.map((value, index) => {
             return (
               <Grid item md={4} sm={6} xs={12}>
-                <Widget title={value.type.toUpperCase()} disableWidgetMenu>
+                <Widget
+                  title={value.type.toUpperCase()}
+                  /* disableWidgetMenu */ menus={[
+                    {
+                      title: "Edit",
+                      onClick: () => ""
+                    },
+                    {
+                      title: "Delete",
+                      onClick: () =>
+                        props.deleteAdapter({
+                          type: value.type,
+                          clientData: props.client
+                        })
+                    }
+                  ]}
+                >
                   <div className={classes.dashedBorder}>
                     <Grid container spacing={4}>
                       <Grid item xs={6}>
                         Enabled
                       </Grid>
                       <Grid item xs={6}>
-                        {value.enabled?"Yes":"No"}
+                        {value.enabled ? "Yes" : "No"}
                       </Grid>
                       <Grid item xs={6}>
                         Secret Type
@@ -46,13 +62,19 @@ const AdaptersPage = ({ classes, ...props }) => {
                         Start After
                       </Grid>
                       <Grid item xs={6}>
-                      {value.secret.startAfter?moment(value.secret.startAfter).format("YYYY/MM/DD") :"N/A"}
+                        {value.secret.startAfter
+                          ? moment(value.secret.startAfter).format("YYYY/MM/DD")
+                          : "N/A"}
                       </Grid>
                       <Grid item xs={6}>
                         Expired Before
                       </Grid>
                       <Grid item xs={6}>
-                      {value.secret.expiredBefore?moment(value.secret.expiredBefore).format("YYYY/MM/DD"):"N/A"}
+                        {value.secret.expiredBefore
+                          ? moment(value.secret.expiredBefore).format(
+                              "YYYY/MM/DD"
+                            )
+                          : "N/A"}
                       </Grid>
                     </Grid>
                   </div>
@@ -66,7 +88,7 @@ const AdaptersPage = ({ classes, ...props }) => {
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
           open={props.isOpen}
-          onClose={()=>props.openAddAdapter(false)}
+          onClose={() => props.openAddAdapter(false)}
           style={{
             alignItems: "center",
             justifyContent: "center",
@@ -79,7 +101,7 @@ const AdaptersPage = ({ classes, ...props }) => {
                 <IconButton
                   edge="end"
                   aria-label="Close"
-                  onClick={()=>props.openAddAdapter(false)}
+                  onClick={() => props.openAddAdapter(false)}
                 >
                   <CloseIcon />
                 </IconButton>
