@@ -1,6 +1,6 @@
 {
   "name": "topics",
   "version": "0.0.0",
-  "main": "topics.js",
+  "main": "topicsContainer.js",
   "private": true
 }

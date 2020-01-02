@@ -44,7 +44,7 @@ const Tables = props => (
         {/* <Widget title="Material-UI Table" upperTitle noBodyPadding> */}
         <Card >
           <div style={{padding:"25px 15px"}}>
-          <Table data={mock.table} />
+          <Table data={props.data} />
           </div>
         </Card>
       </Grid>

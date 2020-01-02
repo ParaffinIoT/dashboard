@@ -4,9 +4,9 @@ import {
   TableRow,
   TableHead,
   TableBody,
-  TableCell,
+  TableCell
 } from "@material-ui/core";
-import { Button } from '../../../../components/Wrappers';
+import { Button } from "../../../../components/Wrappers";
 
 const states = {
   sent: "success",
@@ -15,34 +15,42 @@ const states = {
 };
 
 const TableComponent = ({ data }) => {
-  const keys = Object.keys(data[0]).map(i => i.toUpperCase());
-  keys.shift(); // delete "id" key
+ // delete "id" key
   return (
     <Table className="mb-0">
       <TableHead>
         <TableRow>
-          {keys.map(key => (
-            <TableCell>{key}</TableCell>
-          ))}
+          <TableCell>Topic</TableCell>
+          <TableCell>Action</TableCell>
+          <TableCell>Type</TableCell>
+          <TableCell>Edit</TableCell>
+          <TableCell>Delete</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
-        {data.map(({ id, name, action, type, adapter, edit, Delete, status }) => (
-          <TableRow key={id}>
-            <TableCell className="pl-3 fw-normal">{name}</TableCell>
+        {data.map(({ topic, action, type }, index) => (
+          <TableRow key={index}>
+            <TableCell className="pl-3 fw-normal">{topic}</TableCell>
             <TableCell>{action}</TableCell>
             <TableCell>{type}</TableCell>
-            <TableCell>{adapter}</TableCell>
-            <TableCell>{edit}</TableCell>
-            <TableCell>{Delete}</TableCell>
             <TableCell>
               <Button
-                color={states[status.toLowerCase()]}
+                color="warning"
                 size="small"
                 className="px-2"
                 variant="contained"
               >
-                {status}
+                Edit
+              </Button>
+            </TableCell>
+            <TableCell>
+              <Button
+                color="secondary"
+                size="small"
+                className="px-2"
+                variant="contained"
+              >
+                Delete
               </Button>
             </TableCell>
           </TableRow>

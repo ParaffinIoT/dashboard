@@ -1,8 +1,5 @@
-import { openAddAdapter } from "../../pages/adapters/adapterState";
-import {
-  gettingUserClientSuccessfull,
-  setClient
-} from "../../pages/clients/ClientState";
+import { openAddTopic } from "../../pages/topics/topicsState";
+import { setClient } from "../../pages/clients/ClientState";
 const Parse = window.Parse;
 const currentUser = Parse.User.current();
 const username = currentUser && currentUser.get("username");
@@ -13,21 +10,21 @@ export const initialState = {
   isSuccess: false
 };
 
-export const START_ADDING = "add-adapter/START_ADDING";
-export const ADDING_SUCCESS = "add-adapter/ADDING_SUCCESS";
-export const ADDING_FAILURE = "add-adapter/ADDING_FAILURE";
-export const RESET_ERROR = "add-adapter/RESET_ERROR";
+export const START_ADDING = "add-topic/START_ADDING";
+export const ADDING_SUCCESS = "add-topic/ADDING_SUCCESS";
+export const ADDING_FAILURE = "add-topic/ADDING_FAILURE";
+export const RESET_ERROR = "add-topic/RESET_ERROR";
 
-export const startAddingAdapter = () => ({
+export const startAddingTopic = () => ({
   type: START_ADDING
 });
 
-export const addingAdapterSuccess = isSuccess => ({
+export const addingTopicSuccess = isSuccess => ({
   type: ADDING_SUCCESS,
   payload: { isSuccess }
 });
 
-export const addingAdapterFailure = errorMsg => ({
+export const addingTopicFailure = errorMsg => ({
   type: ADDING_FAILURE,
   payload: { errorMsg }
 });
@@ -36,49 +33,42 @@ export const resetError = () => ({
   type: RESET_ERROR
 });
 
-export const addAdapter = ({
+export const addTopic = ({
   clientData,
-  type,
-  enabled,
-  secretType,
-  password,
-  startAfter,
-  expiredBefore
+  adapter,
+  topic,
+  action,
+  type
 }) => async dispatch => {
-  dispatch(startAddingAdapter());
+  dispatch(startAddingTopic());
 
   try {
     const Client = Parse.Object.extend(username);
     let query = new Parse.Query(Client);
     let client = await query.get(clientData.objectId);
-    const newAdapters = [
-      ...clientData.adapters,
-      {
-        type,
-        enabled,
-        secret: {
-          type: secretType,
-          pwdhash: password,
-          startAfter,
-          expiredBefore
-        },
-        topics: []
+    let newAdapterWithTopic = clientData.adapters.map(value => {
+      if (value.type === adapter) {
+        let newTopics = [...value.topics, { topic, action, type }];
+        value.topics = newTopics;
       }
-    ];
+      return value;
+    });
 
     await client.save({
-      adapters: newAdapters
+      adapters: newAdapterWithTopic
     });
-    dispatch(addingAdapterSuccess(true));
-    const newClient = Object.assign({}, clientData, { adapters: newAdapters });
-    dispatch(openAddAdapter(false));
+    dispatch(addingTopicSuccess(true));
+    const newClient = Object.assign({}, clientData, {
+      adapters: newAdapterWithTopic
+    });
+    dispatch(openAddTopic(false));
     dispatch(setClient(newClient));
   } catch (error) {
-    dispatch(addingAdapterFailure(error.message));
+    dispatch(addingTopicFailure(error.message));
   }
 };
 
-export default function AddAdapterReducer(
+export default function AddTopicReducer(
   state = initialState,
   { type, payload }
 ) {

@@ -129,54 +129,9 @@ export default {
   ],
   table: [
     {
-      id: 0,
-      name: "Mark Otto",
+      topic: "Mark Otto",
       action: "ottoto@wxample.com",
-      type: "ON the Road",
-      adapter: "$25 224.2",
-      edit: "11 May 2017",
-      Delete: "Otsego",
-      status: "Sent"
-    },
-    {
-      id: 1,
-      name: "Mark Otto",
-      action: "ottoto@wxample.com",
-      type: "ON the Road",
-      adapter: "$25 224.2",
-      edit: "11 May 2017",
-      Delete: "Otsego",
-      status: "Sent"
-    },
-    {
-      id: 2,
-      name: "Mark Otto",
-      action: "ottoto@wxample.com",
-      type: "ON the Road",
-      adapter: "$25 224.2",
-      edit: "11 May 2017",
-      Delete: "Otsego",
-      status: "Pending"
-    },
-    {
-      id: 3,
-      name: "Mark Otto",
-      action: "ottoto@wxample.com",
-      type: "ON the Road",
-      adapter: "$25 224.2",
-      edit: "11 May 2017",
-      Delete: "Otsego",
-      status: "Declined"
-    },
-    {
-      id: 4,
-      name: "Mark Otto",
-      action: "ottoto@wxample.com",
-      type: "ON the Road",
-      adapter: "$25 224.2",
-      edit: "11 May 2017",
-      Delete: "Otsego",
-      status: "Sent"
+      type: "ON the Road"
     }
   ]
 };
