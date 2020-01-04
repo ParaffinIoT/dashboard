@@ -88,6 +88,7 @@ const AddAdapter = ({ classes, topicData, ...props }) => {
                   value={props.adapter}
                   onChange={e => props.setAdapter(e.target.value)}
                   fullWidth
+                  disabled={topicData}
                 >
                   {props.client.adapters.map((value, index) => (
                     <MenuItem key={index} value={value.type}>
