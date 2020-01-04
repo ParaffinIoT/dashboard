@@ -26,6 +26,8 @@ const Widget = ({
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const showConfirmDelete = event => {
+    console.log((event.currentTarget));
+    
     setAnchorEl(event.currentTarget);
   };
 

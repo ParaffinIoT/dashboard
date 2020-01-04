@@ -1,7 +1,7 @@
 import { compose, withState, withHandlers } from "recompose";
 import { connect } from "react-redux";
 import TopicsView from "./topicsView";
-import { openAddTopic } from "./topicsState";
+import { openAddTopic, deleteTopic } from "./topicsState";
 
 export default compose(
   connect(
@@ -9,7 +9,7 @@ export default compose(
       client: state.client.client,
       isOpen: state.topics.isOpen
     }),
-    { openAddTopic }
+    { openAddTopic, deleteTopic }
   ),
   withHandlers({})
 )(TopicsView);

@@ -12,7 +12,7 @@ import {
 import PageTitle from "../../components/PageTitle/PageTitle";
 import Widget from "../../components/Widget/WidgetContainer";
 import { Typography } from "../../components/Wrappers/Wrappers";
-import Table from "../tables/Tables";
+import Table from "../../components/TopicsTable/table";
 import CloseIcon from "@material-ui/icons/Close";
 import AddTopic from "../../components/add-topics";
 
@@ -27,7 +27,7 @@ const Topics = ({ classes, ...props }) => (
       {props.client.adapters.map((value, index) => (
         <div style={{ marginTop: "40px" }}>
           <Typography>{value.type.toUpperCase()}</Typography>
-          <Table data={value.topics} />
+          <Table data={value.topics} fn={props.deleteTopic}  clientData={props.client} adapter={value.type}/>
         </div>
       ))}
     </div>
