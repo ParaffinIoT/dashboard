@@ -12,11 +12,6 @@ export const deleteTopic = ({
   adapter,
   topic
 }) => async dispatch => {
-  console.log({
-    clientData,
-    adapter,
-    topic
-  });
   
   try {
     const Client = Parse.Object.extend(username);

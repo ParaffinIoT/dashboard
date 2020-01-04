@@ -20,14 +20,13 @@ const TopicsTable = props => {
   };
 
   const closeConfirmDelete = () => {
-     setAnchorEl(null);
+    setAnchorEl(null);
   };
 
   const rect = anchorEl && anchorEl.getBoundingClientRect();
 
-
   const id = open ? "topic-delete" : undefined;
-  const open = Boolean(anchorEl)
+  const open = Boolean(anchorEl);
   return (
     <React.Fragment>
       <Grid container spacing={32}>
@@ -56,6 +55,14 @@ const TopicsTable = props => {
                           size="small"
                           className="px-2"
                           variant="contained"
+                          onClick={() =>
+                            props.editFn(true, {
+                              topic,
+                              action,
+                              type,
+                              adapter: props.adapter
+                            })
+                          }
                         >
                           Edit
                         </Button>
@@ -78,19 +85,24 @@ const TopicsTable = props => {
                             id={id}
                             // style={style}
                             open={open}
-                             anchorEl={anchorEl}
+                            anchorEl={anchorEl}
                             onClose={closeConfirmDelete}
                             anchorReference="anchorPosition"
-                            anchorPosition={rect?{ top: rect.top -
-                              rect.height -
-                              80, left: rect.left - 130 }:null}
+                            anchorPosition={
+                              rect
+                                ? {
+                                    top: rect.top - rect.height - 80,
+                                    left: rect.left - 130
+                                  }
+                                : null
+                            }
                             anchorOrigin={{
-                              vertical: 'top',
-                              horizontal: 'left',
+                              vertical: "top",
+                              horizontal: "left"
                             }}
                             transformOrigin={{
-                              vertical: 'top',
-                              horizontal: 'left',
+                              vertical: "top",
+                              horizontal: "left"
                             }}
                           >
                             <div>
@@ -111,7 +123,7 @@ const TopicsTable = props => {
                                   size="small"
                                   style={{ marginRight: "10px" }}
                                   onClick={() =>
-                                    props.fn({
+                                    props.deleteFn({
                                       clientData: props.clientData,
                                       adapter: props.adapter,
                                       topic

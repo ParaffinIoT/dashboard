@@ -2,7 +2,7 @@ import { withHandlers, withState, lifecycle, compose } from "recompose";
 import AddTopicView from "./addTopicView";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
-import { addTopic, resetError } from "./addTopicState";
+import { addTopic, resetError, editTopic } from "./addTopicState";
 import { getUserClients } from "../../pages/clients/ClientState";
 import deburr from "lodash/deburr";
 const Parse = window.Parse;
@@ -16,11 +16,12 @@ export default compose(
       user_clients: state.client.user_clients,
       client: state.client.client
     }),
-    { addTopic, resetError, getUserClients }
+    { addTopic, resetError, getUserClients, editTopic }
   ),
-  withState("type", "setTyoe", "rw"),
+  withState("type", "setType", "rw"),
   withState("action", "setAction", "allow"),
   withState("topic", "setTopic", ""),
+  withState("oldTopic", "setOldTopic", ""),
   withState("adapter", "setAdapter", ""),
   withRouter,
   withHandlers({
@@ -28,6 +29,16 @@ export default compose(
       props.addTopic({
         clientData: props.client,
         type: props.type,
+        action: props.action,
+        adapter: props.adapter,
+        topic: props.topic
+      });
+    },
+    handleEditAdapterButtonClick: props => async () => {
+      props.editTopic({
+        clientData: props.client,
+        type: props.type,
+        oldTopic:props.oldTopic,
         action: props.action,
         adapter: props.adapter,
         topic: props.topic

@@ -68,6 +68,42 @@ export const addTopic = ({
   }
 };
 
+export const editTopic = ({
+  clientData,
+  adapter,
+  oldTopic,
+  topic,
+  action,
+  type
+}) => async dispatch => {
+  dispatch(startAddingTopic());
+
+  try {
+    const Client = Parse.Object.extend(username);
+    let query = new Parse.Query(Client);
+    let client = await query.get(clientData.objectId);
+    let newAdapterWithTopic = clientData.adapters.map(value => {
+      if (value.type === adapter) {
+       let topicIndex = value.topics.findIndex(topicInfo=>topicInfo.topic===oldTopic)
+        value.topics[topicIndex] = { topic, action, type };
+      }
+      return value;
+    });
+
+    await client.save({
+      adapters: newAdapterWithTopic
+    });
+    dispatch(addingTopicSuccess(true));
+    const newClient = Object.assign({}, clientData, {
+      adapters: newAdapterWithTopic
+    });
+    dispatch(openAddTopic(false));
+    dispatch(setClient(newClient));
+  } catch (error) {
+    dispatch(addingTopicFailure(error.message));
+  }
+};
+
 export default function AddTopicReducer(
   state = initialState,
   { type, payload }

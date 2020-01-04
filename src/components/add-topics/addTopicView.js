@@ -27,7 +27,16 @@ import {
   KeyboardDatePicker
 } from "@material-ui/pickers";
 
-const AddAdapter = ({ classes, ...props }) => {
+const AddAdapter = ({ classes, topicData, ...props }) => {
+  React.useEffect(() => {
+    if (topicData) {
+      props.setAdapter(topicData.adapter);
+      props.setTopic(topicData.topic);
+      props.setType(topicData.type);
+      props.setAction(topicData.action);
+      props.setOldTopic(topicData.topic);
+    }
+  }, []);
   return (
     <Fragment>
       {/* <Header /> */}
@@ -54,7 +63,7 @@ const AddAdapter = ({ classes, ...props }) => {
               color="primary"
               className={classnames(classes.textRow)}
             >
-              Add Topic
+              {topicData ? "Edit Topic" : "Add Topic"}
             </Typography>
             <div style={{ width: "400px" }}>
               <TextField
@@ -80,9 +89,11 @@ const AddAdapter = ({ classes, ...props }) => {
                   onChange={e => props.setAdapter(e.target.value)}
                   fullWidth
                 >
-
-                  {props.client.adapters.map((value, index)=> <MenuItem key={index} value={value.type}>{value.type.toUpperCase()}</MenuItem>)}
-
+                  {props.client.adapters.map((value, index) => (
+                    <MenuItem key={index} value={value.type}>
+                      {value.type.toUpperCase()}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
               <br />
@@ -142,6 +153,18 @@ const AddAdapter = ({ classes, ...props }) => {
             </div>
             {props.isLoading ? (
               <CircularProgress size={26} />
+            ) : topicData ? (
+              <Button
+                style={{ marginTop: "25px" }}
+                variant="contained"
+                color="primary"
+                size="small"
+                className={classes.backButton}
+                onClick={props.handleEditAdapterButtonClick}
+                disabled={!props.topic || !props.adapter}
+              >
+                Edit Topic
+              </Button>
             ) : (
               <Button
                 style={{ marginTop: "25px" }}

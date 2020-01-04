@@ -16,51 +16,67 @@ import Table from "../../components/TopicsTable/table";
 import CloseIcon from "@material-ui/icons/Close";
 import AddTopic from "../../components/add-topics";
 
-const Topics = ({ classes, ...props }) => (
-  <React.Fragment>
-    <PageTitle
-      title="Topics"
-      button="Add Topic"
-      onBtnClick={() => props.openAddTopic(true)}
-    />
-    <div>
-      {props.client.adapters.map((value, index) => (
-        <div style={{ marginTop: "40px" }}>
-          <Typography>{value.type.toUpperCase()}</Typography>
-          <Table data={value.topics} fn={props.deleteTopic}  clientData={props.client} adapter={value.type}/>
-        </div>
-      ))}
-    </div>
-    <Modal
-      aria-labelledby="simple-modal-title"
-      aria-describedby="simple-modal-description"
-      open={props.isOpen}
-      onClose={() => props.openAddTopic(false)}
-      style={{
-        alignItems: "center",
-        justifyContent: "center",
-        display: "flex"
-      }}
-    >
-      <Fade in={props.isOpen}>
-        <div>
-          <div style={{ float: "right", marginRight: "10px" }}>
-            <IconButton
-              edge="end"
-              aria-label="Close"
-              onClick={() => props.openAddTopic(false)}
-            >
-              <CloseIcon />
-            </IconButton>
+const Topics = ({ classes, ...props }) => {
+  const [topicData, setTopicData] = React.useState(null);
+  const editFn = (isOpen, topicInfo) => {
+    setTopicData(topicInfo);
+    return props.openAddTopic(isOpen);
+  };
+  return (
+    <React.Fragment>
+      <PageTitle
+        title="Topics"
+        button="Add Topic"
+        onBtnClick={() => {
+          setTopicData(null);
+          return props.openAddTopic(true);
+        }}
+      />
+      <div>
+        {props.client.adapters.map((value, index) => (
+          <div style={{ marginTop: "40px" }}>
+            <Typography>{value.type.toUpperCase()}</Typography>
+            <Table
+              data={value.topics}
+              deleteFn={props.deleteTopic}
+              editFn={editFn}
+              clientData={props.client}
+              adapter={value.type}
+            />
           </div>
-          <div className={classes.paper}>
-            <AddTopic />
+        ))}
+      </div>
+      <Modal
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+        open={props.isOpen}
+        onClose={() => props.openAddTopic(false)}
+        style={{
+          alignItems: "center",
+          justifyContent: "center",
+          display: "flex"
+        }}
+      >
+        <Fade in={props.isOpen}>
+          <div>
+            <div style={{ float: "right", marginRight: "10px" }}>
+              <IconButton
+                edge="end"
+                aria-label="Close"
+                onClick={() => props.openAddTopic(false)}
+              >
+                <CloseIcon />
+              </IconButton>
+            </div>
+            <div className={classes.paper}>
+              <AddTopic topicData={topicData} />
+            </div>
           </div>
-        </div>
-      </Fade>
-    </Modal>
-  </React.Fragment>
-);
+        </Fade>
+      </Modal>
+    </React.Fragment>
+  );
+};
 
 const styles = theme => ({
   dashedBorder: {
