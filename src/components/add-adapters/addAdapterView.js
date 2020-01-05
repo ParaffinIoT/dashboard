@@ -16,18 +16,28 @@ import {
   Switch,
   Radio,
   FormLabel,
-  RadioGroup,
+  RadioGroup
 } from "@material-ui/core";
 import NotificationCustomComponent from "../../components/Notification";
 import classnames from "classnames";
-import DateFnsUtils from '@date-io/date-fns';
+import DateFnsUtils from "@date-io/date-fns";
 import {
   MuiPickersUtilsProvider,
   KeyboardTimePicker,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
+  KeyboardDatePicker
+} from "@material-ui/pickers";
 
-const AddAdapter = ({ classes, ...props }) => {
+const AddAdapter = ({ classes, adapterData, ...props }) => {
+  React.useEffect(() => {
+    if (adapterData) {
+      props.setTyoe(adapterData.type);
+      props.setEnabled(adapterData.enabled);
+      props.setSecreteType(adapterData.secret.type);
+      props.setPassword(adapterData.secret.pwdhash);
+      props.setStartAfter(adapterData.secret.startAfter);
+      props.setExpiredBefore(adapterData.secret.expiredBefore);
+    }
+  }, []);
   return (
     <Fragment>
       {/* <Header /> */}
@@ -54,103 +64,129 @@ const AddAdapter = ({ classes, ...props }) => {
               color="primary"
               className={classnames(classes.textRow)}
             >
-            Add New Adapter
+              {adapterData ? "Edit Adapter" : "Add New Adapter"}
             </Typography>
             <div style={{ width: "400px" }}>
-            <FormControl className={classes.formControl}>
-        <InputLabel id="demo-simple-select-label">Adapter Type</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={props.type}
-           onChange={(e)=>props.setTyoe(e.target.value)}
-        fullWidth
-        >
-          <MenuItem value="mqtt">MQTT</MenuItem>
-          <MenuItem value="coap">COaP</MenuItem>
-          <MenuItem value="http">HTTP</MenuItem>
-        </Select>
-      </FormControl>
-      <FormControlLabel
-        control={
-          <Switch checked={props.enabled} onChange={(e)=>props.setEnabled(!props.enabled)} value={props.enabled} color="primary" />
-        }
-        label="Enable this adapter"
-      />
-      <br/>
-          <FormControl component="fieldset">
-      <FormLabel component="legend">Password Type</FormLabel>
-      <RadioGroup aria-label="position" name="position" value={props.secretType} onChange={(e)=>props.setSecreteType(e.target.value)} row>
-        <FormControlLabel
-          value="basic"
-          control={<Radio color="primary" />}
-          label="Basic"
-          labelPlacement="end"
-        />
-        <FormControlLabel
-          value="pbkdf2"
-          control={<Radio color="primary" />}
-          label="Pbkdf2"
-          labelPlacement="end"
-        />
-        </RadioGroup>
-        </FormControl>
-        <TextField
+              <FormControl className={classes.formControl}>
+                <InputLabel id="demo-simple-select-label">
+                  Adapter Type
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={props.type}
+                  onChange={e => props.setTyoe(e.target.value)}
+                  fullWidth
+                >
+                  <MenuItem value="mqtt">MQTT</MenuItem>
+                  <MenuItem value="coap">COaP</MenuItem>
+                  <MenuItem value="http">HTTP</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={props.enabled}
+                    onChange={e => props.setEnabled(!props.enabled)}
+                    value={props.enabled}
+                    color="primary"
+                  />
+                }
+                label="Enable this adapter"
+              />
+              <br />
+              <FormControl component="fieldset">
+                <FormLabel component="legend">Password Type</FormLabel>
+                <RadioGroup
+                  aria-label="position"
+                  name="position"
+                  value={props.secretType}
+                  onChange={e => props.setSecreteType(e.target.value)}
+                  row
+                >
+                  <FormControlLabel
+                    value="basic"
+                    control={<Radio color="primary" />}
+                    label="Basic"
+                    labelPlacement="end"
+                  />
+                  <FormControlLabel
+                    value="pbkdf2"
+                    control={<Radio color="primary" />}
+                    label="Pbkdf2"
+                    labelPlacement="end"
+                  />
+                </RadioGroup>
+              </FormControl>
+              <TextField
                 required
                 id="standard-required"
                 label="Required"
                 placeholder="Password"
                 value={props.password}
-                onChange={(e)=>props.setPassword(e.target.value)
-                }
+                onChange={e => props.setPassword(e.target.value)}
                 fullWidth
                 InputLabelProps={{
                   shrink: true
                 }}
                 inputProps={{
-                    type:"password"
+                  type: "password"
                 }}
               />
 
-<MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <div style={{display:"flex", justifyContent:"space-between"}}>
-        <KeyboardDatePicker
-          disableToolbar
-          variant="inline"
-          format="MM/dd/yyyy"
-          margin="normal"
-          id="date-picker-inline"
-          label="Starts After"
-          value={props.startAfter}
-          onChange={(date)=>props.setStartAfter(date)}
-          InputLabelProps={{
-              shrink:true
-          }}
-          KeyboardButtonProps={{
-            'aria-label': 'change date',
-          }}
-        />
-        <KeyboardDatePicker
-          disableToolbar
-          variant="inline"
-          format="MM/dd/yyyy"
-          margin="normal"
-          id="date-picker-inline"
-          label="Expires Before"
-          value={props.expiredBefore}
-          onChange={(date)=>props.setExpiredBefore(date)}
-          InputLabelProps={{
-            shrink:true
-        }}
-          KeyboardButtonProps={{
-            'aria-label': 'change date',
-          }}
-        />
-        </div>
-    </MuiPickersUtilsProvider>
+              <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <div
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                  <KeyboardDatePicker
+                    disableToolbar
+                    variant="inline"
+                    format="MM/dd/yyyy"
+                    margin="normal"
+                    id="date-picker-inline"
+                    label="Starts After"
+                    value={props.startAfter}
+                    onChange={date => props.setStartAfter(date)}
+                    InputLabelProps={{
+                      shrink: true
+                    }}
+                    KeyboardButtonProps={{
+                      "aria-label": "change date"
+                    }}
+                  />
+                  <KeyboardDatePicker
+                    disableToolbar
+                    variant="inline"
+                    format="MM/dd/yyyy"
+                    margin="normal"
+                    id="date-picker-inline"
+                    label="Expires Before"
+                    value={props.expiredBefore}
+                    onChange={date => props.setExpiredBefore(date)}
+                    InputLabelProps={{
+                      shrink: true
+                    }}
+                    KeyboardButtonProps={{
+                      "aria-label": "change date"
+                    }}
+                  />
+                </div>
+              </MuiPickersUtilsProvider>
             </div>
             {props.isLoading ? (
               <CircularProgress size={26} />
+            ) : adapterData ? (
+              <Button
+                style={{ marginTop: "25px" }}
+                variant="contained"
+                color="primary"
+                size="small"
+                className={classes.backButton}
+                onClick={props.handleEditAdapterButtonClick}
+                disabled={!props.type || !props.password}
+              >
+                Edit Adapter
+              </Button>
             ) : (
               <Button
                 style={{ marginTop: "25px" }}
@@ -208,11 +244,11 @@ const styles = theme => ({
   },
   formControl: {
     margin: theme.spacing(1),
-    minWidth: "100%",
+    minWidth: "100%"
   },
   selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
+    marginTop: theme.spacing(2)
+  }
 });
 
 export default withStyles(styles, { withTheme: true })(AddAdapter);

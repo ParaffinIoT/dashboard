@@ -15,12 +15,16 @@ import AddAdapter from "../../components/add-adapters";
 import moment from "moment";
 
 const AdaptersPage = ({ classes, ...props }) => {
+  const [adapterData, setAdapterData] = React.useState(null);
   return (
     <React.Fragment>
       <PageTitle
         title="Adapters"
         button="Add Adapter"
-        onBtnClick={() => props.openAddAdapter(true)}
+        onBtnClick={() => {
+          setAdapterData(null);
+          props.openAddAdapter(true);
+        }}
       />
       <Grid container spacing={4}>
         {props.client.adapters &&
@@ -32,7 +36,10 @@ const AdaptersPage = ({ classes, ...props }) => {
                   /* disableWidgetMenu */ menus={[
                     {
                       title: "Edit",
-                      onClick: () => ""
+                      onClick: () => {
+                        setAdapterData(value);
+                        props.openAddAdapter(true);
+                      }
                     },
                     {
                       title: "Delete",
@@ -78,7 +85,7 @@ const AdaptersPage = ({ classes, ...props }) => {
                       </Grid>
                     </Grid>
                   </div>
-                  <Button>View Topics</Button>
+                  {/* <Button>View Topics</Button> */}
                 </Widget>
               </Grid>
             );
@@ -88,7 +95,10 @@ const AdaptersPage = ({ classes, ...props }) => {
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
           open={props.isOpen}
-          onClose={() => props.openAddAdapter(false)}
+          onClose={() => {
+            setAdapterData(null);
+            props.openAddAdapter(false);
+          }}
           style={{
             alignItems: "center",
             justifyContent: "center",
@@ -101,13 +111,16 @@ const AdaptersPage = ({ classes, ...props }) => {
                 <IconButton
                   edge="end"
                   aria-label="Close"
-                  onClick={() => props.openAddAdapter(false)}
+                  onClick={() => {
+                    setAdapterData(null);
+                    props.openAddAdapter(false);
+                  }}
                 >
                   <CloseIcon />
                 </IconButton>
               </div>
               <div className={classes.paper}>
-                <AddAdapter />
+                <AddAdapter adapterData={adapterData} />
               </div>
             </div>
           </Fade>

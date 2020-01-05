@@ -78,6 +78,50 @@ export const addAdapter = ({
   }
 };
 
+export const editAdapter = ({
+  clientData,
+  type,
+  enabled,
+  secretType,
+  password,
+  startAfter,
+  expiredBefore
+}) => async dispatch => {
+  // dispatch(startAddingAdapter());
+
+  try {
+    const Client = Parse.Object.extend(username);
+    let query = new Parse.Query(Client);
+    let client = await query.get(clientData.objectId);
+    const adapterIndex = clientData.adapters.findIndex(
+      value => value.type === type
+    );
+    const adapterTopics = clientData.adapters[adapterIndex].topics;
+    clientData.adapters[adapterIndex] = {
+      type,
+      enabled,
+      secret: {
+        type: secretType,
+        pwdhash: password,
+        startAfter,
+        expiredBefore
+      },
+      topics: adapterTopics
+    };
+    const newAdapters = clientData.adapters;
+
+    await client.save({
+      adapters: newAdapters
+    });
+    // dispatch(addingAdapterSuccess(true));
+    const newClient = Object.assign({}, clientData, { adapters: newAdapters });
+    dispatch(openAddAdapter(false));
+    dispatch(setClient(newClient));
+  } catch (error) {
+    // dispatch(addingAdapterFailure(error.message));
+  }
+};
+
 export default function AddAdapterReducer(
   state = initialState,
   { type, payload }
