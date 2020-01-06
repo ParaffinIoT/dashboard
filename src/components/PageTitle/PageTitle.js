@@ -13,7 +13,8 @@ const PageTitle = ({ classes, ...props }) => (
         variant="contained"
         size="large"
         color="secondary"
-        onClick = {props.onBtnClick}
+        onClick={props.onBtnClick}
+        disabled={props.btnDisabled}
       >
         {props.button}
       </Button>
@@ -29,15 +30,15 @@ const styles = theme => ({
     marginTop: theme.spacing.unit * 5
   },
   typo: {
-    color: theme.palette.text.hint,
+    color: theme.palette.text.hint
   },
   button: {
     boxShadow: theme.customShadows.widget,
-    textTransform: 'none',
-    '&:active' : {
-      boxShadow: theme.customShadows.widgetWide,
-    },
-  },
+    textTransform: "none",
+    "&:active": {
+      boxShadow: theme.customShadows.widgetWide
+    }
+  }
 });
 
 export default withStyles(styles)(PageTitle);

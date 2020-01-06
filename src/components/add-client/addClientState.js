@@ -60,6 +60,34 @@ export const addClient = ({ clientName, version }) => async (dispatch, getState)
   }
 };
 
+
+export const editClient = ({clientData, clientName, version }) => async (dispatch, getState) => {
+  dispatch(startAddingClient());
+
+  try {
+    const Client = Parse.Object.extend(username);
+    let query = new Parse.Query(Client);
+    let client = await query.get(clientData.objectId);
+    let adapters = clientData.adapters;
+
+    let new_client = await client.save({
+      clientName,
+      adapters,
+      ver: version,
+      realm: Parse.User.current().get("username")
+    });
+    const {user_clients} = getState().client
+    const new_user_clients = user_clients.map(value=>value)
+    const clientIndex = new_user_clients.findIndex(value=>value.clientName===clientData.clientName)
+    new_user_clients[clientIndex]=new_client.toJSON()
+    dispatch(addingClientSuccess(true));
+    dispatch(openAddClient(false));
+    dispatch(gettingUserClientSuccessfull(new_user_clients))
+  } catch (error) {
+    dispatch(addingClientFailure(error.message));
+  }
+};
+
 export default function AddClientReducer(
   state = initialState,
   { type, payload }

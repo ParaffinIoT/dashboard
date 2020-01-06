@@ -11,50 +11,19 @@ import {
 } from "@material-ui/core";
 import Widget from "../../components/Widget";
 import PageTitle from "../../components/PageTitle";
-import { Link } from "react-router-dom";
 import Header from "../../components/Header";
-import { red, blue } from "@material-ui/core/colors";
+import { blue } from "@material-ui/core/colors";
 import AddClient from "../../components/add-client";
-import UpdateClient from "../../components/update-client";
 import Chip from "@material-ui/core/Chip";
 import CloseIcon from "@material-ui/icons/Close";
-import updateClientContainer from "../../components/update-client";
 function rand() {
   return Math.round(Math.random() * 20) - 10;
 }
 
-function getModalStyle() {
-  const top = 50 + rand();
-  const left = 50 + rand();
-
-  return {
-    top: `${top}%`,
-    left: `${left}%`,
-    transform: `translate(-${top}%, -${left}%)`
-  };
-}
-
 const Dashboard = ({ classes, theme, client, history, ...props }) => {
-  const [openAddClient, setOpenAddClient] = React.useState(false);
-  const [openUpdateClient, setOpenUpdateClient] = React.useState(false);
   const [clientName, setClientName] = React.useState(null);
-  const [modalStyle] = React.useState(getModalStyle);
-  const openAddClientHandler = () => {
-    setOpenAddClient(true);
-  };
+  const [clientData, setClientData] = React.useState(null);
 
-  const closeAddClient = () => {
-    setOpenAddClient(false);
-  };
-
-  const openUpdateClientHandler = adapterClientName => () => {
-    setOpenUpdateClient(true);
-    setClientName(adapterClientName);
-  };
-
-  const closeUpdateClient = () => {
-    setOpenUpdateClient(false);
-  };
   return (
     <React.Fragment>
       <CssBaseline />
@@ -81,7 +50,10 @@ const Dashboard = ({ classes, theme, client, history, ...props }) => {
                   className={classes.iconHover}
                   color="disabled"
                   style={{ fontSize: 90 }}
-                  onClick={() => props.openAddClient(true)}
+                  onClick={() => {
+                    setClientData(null);
+                    props.openAddClient(true);
+                  }}
                 >
                   add_circle
                 </Icon>
@@ -96,7 +68,10 @@ const Dashboard = ({ classes, theme, client, history, ...props }) => {
                     menus={[
                       {
                         title: "Edit",
-                        onClick: openUpdateClientHandler(value.clientName)
+                        onClick: () => {
+                          setClientData(value);
+                          props.openAddClient(true);
+                        }
                       },
                       {
                         title: "Delete",
@@ -127,13 +102,15 @@ const Dashboard = ({ classes, theme, client, history, ...props }) => {
                       </div>
                     ) : (
                       <div style={{ margin: "auto" }}>
-                        <p style={{textAlign:"center"}}>No adapter for this client</p>
+                        <p style={{ textAlign: "center" }}>
+                          No adapter for this client
+                        </p>
                         <Chip
                           variant="outlined"
                           size="small"
                           label="Clickable"
                           label="Add Now"
-                          style={{marginLeft:"20%"}}
+                          style={{ marginLeft: "20%" }}
                           color="primary"
                           onClick={() => ""}
                         />
@@ -153,9 +130,7 @@ const Dashboard = ({ classes, theme, client, history, ...props }) => {
                         color="primary"
                         size="small"
                         className={classes.forgetButton}
-                        onClick={() =>
-                          props.handleSetClient(value, history)
-                        }
+                        onClick={() => props.handleSetClient(value, history)}
                       >
                         Select
                       </Button>
@@ -192,7 +167,10 @@ const Dashboard = ({ classes, theme, client, history, ...props }) => {
                   className={classes.iconHover}
                   color="disabled"
                   style={{ fontSize: 90 }}
-                  onClick={() => props.openAddClient(true)}
+                  onClick={() => {
+                    setClientData(null);
+                    props.openAddClient(true);
+                  }}
                 >
                   add_circle
                 </Icon>
@@ -206,7 +184,10 @@ const Dashboard = ({ classes, theme, client, history, ...props }) => {
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
         open={props.isOpen}
-        onClose={()=>props.openAddClient(false)}
+        onClose={() => {
+          setClientData(null);
+          props.openAddClient(false);
+        }}
         style={{
           alignItems: "center",
           justifyContent: "center",
@@ -219,13 +200,16 @@ const Dashboard = ({ classes, theme, client, history, ...props }) => {
               <IconButton
                 edge="end"
                 aria-label="Close"
-                onClick={()=>props.openAddClient(false)}
+                onClick={() => {
+                  setClientData(null);
+                  props.openAddClient(false);
+                }}
               >
                 <CloseIcon />
               </IconButton>
             </div>
             <div className={classes.paper}>
-              <AddClient adapterClientName={clientName} />
+              <AddClient adapterClientName={clientName} clientData={clientData} />
             </div>
           </div>
         </Fade>

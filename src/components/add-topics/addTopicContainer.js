@@ -23,6 +23,7 @@ export default compose(
   withState("topic", "setTopic", ""),
   withState("oldTopic", "setOldTopic", ""),
   withState("adapter", "setAdapter", ""),
+  withState("topicExist", "setTopicExist", false),
   withRouter,
   withHandlers({
     handleAddAdapterButtonClick: props => async () => {
@@ -38,7 +39,7 @@ export default compose(
       props.editTopic({
         clientData: props.client,
         type: props.type,
-        oldTopic:props.oldTopic,
+        oldTopic: props.oldTopic,
         action: props.action,
         adapter: props.adapter,
         topic: props.topic

@@ -25,6 +25,7 @@ const AdaptersPage = ({ classes, ...props }) => {
           setAdapterData(null);
           props.openAddAdapter(true);
         }}
+        btnDisabled={props.client.adapters.length === 3}
       />
       <Grid container spacing={4}>
         {props.client.adapters &&

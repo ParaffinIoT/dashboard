@@ -9,7 +9,7 @@ const username = currentUser && currentUser.get("username");
 export const initialState = {
   isLoading: true,
   error: null,
-  errorMsg: "",
+  errorMsg: null,
   isSuccess: false
 };
 
@@ -87,7 +87,7 @@ export const editAdapter = ({
   startAfter,
   expiredBefore
 }) => async dispatch => {
-  // dispatch(startAddingAdapter());
+  dispatch(startAddingAdapter());
 
   try {
     const Client = Parse.Object.extend(username);
@@ -113,12 +113,12 @@ export const editAdapter = ({
     await client.save({
       adapters: newAdapters
     });
-    // dispatch(addingAdapterSuccess(true));
+    dispatch(addingAdapterSuccess(true));
     const newClient = Object.assign({}, clientData, { adapters: newAdapters });
     dispatch(openAddAdapter(false));
     dispatch(setClient(newClient));
   } catch (error) {
-    // dispatch(addingAdapterFailure(error.message));
+   dispatch(addingAdapterFailure(error.message));
   }
 };
 
@@ -148,7 +148,7 @@ export default function AddAdapterReducer(
     case RESET_ERROR:
       return {
         error: false,
-        errorMsg: ""
+        errorMsg: null
       };
     default:
       return state;

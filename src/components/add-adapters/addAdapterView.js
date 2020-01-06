@@ -27,7 +27,14 @@ import {
   KeyboardDatePicker
 } from "@material-ui/pickers";
 
+const availableAdapters = [
+  { label: "MQTT", value: "mqtt" },
+  { label: "COaP", value: "coap" },
+  { label: "HTTP", value: "http" }
+];
+
 const AddAdapter = ({ classes, adapterData, ...props }) => {
+  const addedApters = props.client.adapters.map(value => value.type);
   React.useEffect(() => {
     if (adapterData) {
       props.setTyoe(adapterData.type);
@@ -43,7 +50,7 @@ const AddAdapter = ({ classes, adapterData, ...props }) => {
       {/* <Header /> */}
       <Grid container className={classes.container}>
         <div style={{ position: "relative", marginTop: "40px" }}>
-          <Fade in={!props.error}>
+          <Fade in={props.error}>
             <Typography color="secondary" className={classes.errorMessage}>
               {props.errorMsg}
             </Typography>
@@ -53,7 +60,7 @@ const AddAdapter = ({ classes, adapterData, ...props }) => {
               className={classes.notificationItem}
               shadowless
               type="customer"
-              message="Adapter added"
+              message={adapterData ? "Adapter updated" : "Adapter added"}
               variant="contained"
               color="success"
             />
@@ -78,9 +85,16 @@ const AddAdapter = ({ classes, adapterData, ...props }) => {
                   onChange={e => props.setTyoe(e.target.value)}
                   fullWidth
                 >
-                  <MenuItem value="mqtt">MQTT</MenuItem>
-                  <MenuItem value="coap">COaP</MenuItem>
-                  <MenuItem value="http">HTTP</MenuItem>
+                  {availableAdapters
+                    .filter(data => !addedApters.includes(data.value))
+                    .map((adapter, index) => (
+                      <MenuItem
+                        key={`adapter-select${index}`}
+                        value={adapter.value}
+                      >
+                        {adapter.label}
+                      </MenuItem>
+                    ))}
                 </Select>
               </FormControl>
               <FormControlLabel

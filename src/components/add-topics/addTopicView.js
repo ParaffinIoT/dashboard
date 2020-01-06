@@ -20,12 +20,6 @@ import {
 } from "@material-ui/core";
 import NotificationCustomComponent from "../../components/Notification";
 import classnames from "classnames";
-import DateFnsUtils from "@date-io/date-fns";
-import {
-  MuiPickersUtilsProvider,
-  KeyboardTimePicker,
-  KeyboardDatePicker
-} from "@material-ui/pickers";
 
 const AddAdapter = ({ classes, topicData, ...props }) => {
   React.useEffect(() => {
@@ -37,12 +31,34 @@ const AddAdapter = ({ classes, topicData, ...props }) => {
       props.setOldTopic(topicData.topic);
     }
   }, []);
+
+  React.useEffect(() => {
+    if (props.adapter) {
+      let adapter = props.client.adapters.find(
+        value => value.type === props.adapter
+      );
+      let topicExist;
+      if (!topicData) {
+        topicExist = adapter.topics.find(
+          value => value.topic.toLowerCase() === props.topic.toLowerCase()
+        );
+      } else {
+        topicExist = adapter.topics.find(
+          value =>
+            value.topic.toLowerCase() === props.topic.toLowerCase() &&
+            props.topic.toLowerCase() !== props.oldTopic.toLowerCase()
+        );
+      }
+
+      props.setTopicExist(topicExist ? true : false);
+    }
+  }, [props.topic, props.adapter]);
   return (
     <Fragment>
       {/* <Header /> */}
       <Grid container className={classes.container}>
         <div style={{ position: "relative", marginTop: "40px" }}>
-          <Fade in={!props.error}>
+          <Fade in={props.error}>
             <Typography color="secondary" className={classes.errorMessage}>
               {props.errorMsg}
             </Typography>
@@ -52,7 +68,7 @@ const AddAdapter = ({ classes, topicData, ...props }) => {
               className={classes.notificationItem}
               shadowless
               type="customer"
-              message="Adapter added"
+              message={topicData ? "Topic updated" : "Topic added"}
               variant="contained"
               color="success"
             />
@@ -72,11 +88,15 @@ const AddAdapter = ({ classes, topicData, ...props }) => {
                 label="Required"
                 placeholder="Topic"
                 value={props.topic}
-                onChange={e => props.setTopic(e.target.value)}
+                onChange={e => {
+                  props.setTopic(e.target.value);
+                }}
                 fullWidth
                 InputLabelProps={{
                   shrink: true
                 }}
+                error={props.topicExist}
+                helperText={props.topicExist ? "Topic alread exist" : null}
               />
               <FormControl className={classes.formControl}>
                 <InputLabel id="demo-simple-select-label">
@@ -162,7 +182,7 @@ const AddAdapter = ({ classes, topicData, ...props }) => {
                 size="small"
                 className={classes.backButton}
                 onClick={props.handleEditAdapterButtonClick}
-                disabled={!props.topic || !props.adapter}
+                disabled={!props.topic || !props.adapter || props.topicExist}
               >
                 Edit Topic
               </Button>
@@ -174,7 +194,7 @@ const AddAdapter = ({ classes, topicData, ...props }) => {
                 size="small"
                 className={classes.backButton}
                 onClick={props.handleAddAdapterButtonClick}
-                disabled={!props.topic || !props.adapter}
+                disabled={!props.topic || !props.adapter || props.topicExist}
               >
                 Add Topic
               </Button>

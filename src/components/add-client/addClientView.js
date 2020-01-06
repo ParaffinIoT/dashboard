@@ -13,7 +13,31 @@ import {
 import NotificationCustomComponent from "../../components/Notification";
 import classnames from "classnames";
 
-const AddClient = ({ classes, ...props }) => {
+const AddClient = ({ classes, clientData, ...props }) => {
+  React.useEffect(() => {
+    if (clientData) {
+      props.setClientName(clientData.clientName);
+      props.setVersion(clientData.ver);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    let clientExist;
+    if (!clientData) {
+      clientExist = props.user_clients.find(
+        value =>
+          value.clientName.toLowerCase() === props.clientName.toLowerCase()
+      );
+    } else {
+      clientExist = props.user_clients.find(
+        value =>
+          value.clientName.toLowerCase() === props.clientName.toLowerCase() &&
+          props.clientName.toLowerCase() !== clientData.clientName.toLowerCase()
+      );
+    }
+
+    props.setClientExist(clientExist ? true : false);
+  }, [props.clientName]);
   return (
     <Fragment>
       {/* <Header /> */}
@@ -40,21 +64,22 @@ const AddClient = ({ classes, ...props }) => {
               color="primary"
               className={classnames(classes.textRow)}
             >
-              {props.adapterClientName ? "Add New Adapter" : " Add New Client"}
+              {clientData ? "Edit Client" : " Add New Client"}
             </Typography>
             <div style={{ width: "400px" }}>
               <TextField
                 required
                 id="standard-required"
-                label="Required"
+                label={props.clientExist?"Errpr":"Required"}
                 placeholder="Client Name"
                 value={props.clientName}
-                onChange={(e)=>props.setClientName(e.target.value)
-                }
+                onChange={e => props.setClientName(e.target.value)}
                 fullWidth
                 InputLabelProps={{
                   shrink: true
                 }}
+                error={props.clientExist}
+                helperText={props.clientExist?"Client already exist":null}
               />
               <TextField
                 className={classnames(classes.textField)}
@@ -63,7 +88,7 @@ const AddClient = ({ classes, ...props }) => {
                 label="Required"
                 placeholder="Version"
                 value={props.version}
-                onChange={(e)=>props.setVersion(e.target.value)}
+                onChange={e => props.setVersion(e.target.value)}
                 fullWidth
                 InputLabelProps={{
                   shrink: true
@@ -72,6 +97,20 @@ const AddClient = ({ classes, ...props }) => {
             </div>
             {props.isLoading ? (
               <CircularProgress size={26} />
+            ) : clientData ? (
+              <Button
+                style={{ marginTop: "25px" }}
+                variant="contained"
+                color="primary"
+                size="small"
+                className={classes.backButton}
+                onClick={props.handleEditClientButtonClick}
+                disabled={
+                  !props.clientName || !props.version || props.clientExist
+                }
+              >
+                Edit Client
+              </Button>
             ) : (
               <Button
                 style={{ marginTop: "25px" }}
@@ -80,7 +119,9 @@ const AddClient = ({ classes, ...props }) => {
                 size="small"
                 className={classes.backButton}
                 onClick={props.handleAddClientButtonClick}
-                disabled={!props.clientName || !props.version}
+                disabled={
+                  !props.clientName || !props.version || props.clientExist
+                }
               >
                 Add Client
               </Button>
